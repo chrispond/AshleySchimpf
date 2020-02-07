@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+  </head>
+
+  <body>
+    <%- PrismicDOM.RichText.asHtml(post.data.blog_title_long, ctx.linkResolver)
+    %>
+
+    <div>
+      <%- PrismicDOM.RichText.asHtml(post.data.blog_content, ctx.linkResolver)
+      %>
+    </div>
+  </body>
+</html>
