@@ -79,3 +79,5 @@ app.get("/blog/:uid", (req, res) => {
     }
   });
 });
+
+app.set('port', PORT || 3000);
