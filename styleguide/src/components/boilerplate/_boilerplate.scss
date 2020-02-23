@@ -1,0 +1,33 @@
+form.boilerplate-calculator {
+ max-width: 400px;
+ padding: 30px 10px;
+ font-family: sans-serif;
+ font-size: 12px;
+ text-align: center;
+ background-color: #ececec;
+
+ fieldset {
+  display: inline-block;
+  outline: none;
+  border: none;
+ }
+ input,
+ select {
+  vertical-align: middle;
+ }
+ input[type='number'] {
+  width: 80px;
+  height: 20px;
+  margin: 0 5px;
+  padding: 0;
+  text-indent: 3px;
+ }
+ input[type='submit'] {
+  height: 23px;
+  text-transform: uppercase;
+  line-height: 20px;
+  color: #fff;
+  background: #333;
+  border: none;
+ }
+}
