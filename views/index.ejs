@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title><%= home.name %> - <%= home.job_title %> | <%= home.tag_line %></title>
   </head>
 
   <body>
@@ -13,31 +13,51 @@
     <h3>
       <%= home.tag_line %>
     </h3>
-    <img src="<%= home.profile_pic %>" />
+    <img src="<%= home.profile_pic.url %>" />
 
     <div>
       <%- PrismicDOM.RichText.asHtml(home.about, ctx.linkResolver) %>
     </div>
 
-    <ul>
-      <% home.social_media_accounts.forEach(function(slice){ %>
-      <li><%= slice.url %> <%= slice %></li>
-      <% }); %>
-    </ul>
+    <%- PrismicDOM.RichText.asHtml(home.contact_title) %>
+    <ul class="connect">
+        <% home.social_media_accounts.forEach(function(account){ %>
+          <li>
+            <a href="<%= account.url %>" target="_blank">
+              <img src="<%= account.social_icon.url %>" with="85" height="85" alt="<%= account.social_icon.alt %>" />
+            </a>
+          </li>
+        <% }); %>
+      </ul>
 
     <h2>
       <%= PrismicDOM.RichText.asText(home.blog_feed_title) %>
     </h2>
 
     <ul>
-      <% const getStringMonth = month => { const monthLabel = ['Jan', 'Feb',
-      'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return monthLabel[month]; }; const getStringDay = day => (day + (day > 0 ?
-      ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10> 3 ? 0 : day %
-      10] : '')); %> <%blogPosts.forEach(function(post){ var date =
-      PrismicDOM.Date(post.data.post_date); var content =
-      PrismicDOM.RichText.asText(post.data.blog_content) + ''; var readTime =
-      Math.ceil(content.split(" ").length / 200); %>
+        <% 
+        const getStringMonth = month => { 
+          const monthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          return monthLabel[month]; 
+        }; 
+        
+        const getStringDay = day => {
+          return (day + (day > 0 ?
+          ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10 > 3 ? 0 : 
+          day % 10] : ''))
+        }; %> 
+        
+        <%
+          blogPosts.forEach(post => { 
+            const date = PrismicDOM.Date(post.data.post_date); 
+            const wordCount = post.data.body.reduce((accumulator, currentValue) => {
+              const content = PrismicDOM.RichText.asText(currentValue.primary[currentValue.slice_type]);
+              return accumulator + content.split(" ").length;
+            }, 0);
+  
+            // Read time based off average 200 words per minute
+            const readTime = Math.ceil(wordCount / 200); 
+        %>
       <li>
         <a href="blog/<%= post.uid %>">
           <h3><%= post.data.blog_title_short %></h3>
@@ -50,5 +70,19 @@
       </li>
       <% }); %>
     </ul>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@id": "https://www.site.com/",
+        "@type": "Person",
+        "name": "<%= home.name %>",
+        "jobTitle": "<%= home.job_title %>",
+        "url": "https://www.site.com/",
+        "image": "<%= home.profile_pic.url %>",
+        "sameAs": [<% home.social_media_accounts.forEach(function(account){ %>
+            "<%= account.url %>",<% }); %>
+        ]
+      }
+    </script>
   </body>
 </html>

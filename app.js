@@ -41,22 +41,23 @@ app.use((req, res, next) => {
  * Route with documentation to build your project with prismic
  */
 
-app.route("/").get(function(req, res) {
-  let homeData, blogData;
+app.route('/').get((req, res) => {
+  let homeData;
+  let blogData;
 
-  req.prismic.api.getByUID("homepage", "home").then(response => {
+  req.prismic.api.getByUID('homepage', 'home').then(response => {
     homeData = response;
 
     req.prismic.api
-      .query(Prismic.Predicates.at("document.type", "blog_post"))
-      .then(response => {
-        blogData = response;
+    .query(Prismic.Predicates.at("document.type", "blog_post"))
+    .then(response => {
+      blogData = response;
 
-        res.render("index", {
-          home: homeData.data,
-          blogPosts: blogData.results
-        });
+      res.render("index", {
+        home: homeData.data,
+        blogPosts: blogData.results
       });
+    });
   });
 });
 
@@ -68,15 +69,26 @@ app.get("/blog/:uid", (req, res) => {
   const uid = req.params.uid;
 
   // Query the post by its uid
-  req.prismic.api.getByUID("blog_post", uid).then(post => {
-    if (post) {
-      // If a document is returned, render the post
-      res.render("post", { post });
+  req.prismic.api.getByUID("blog_post", uid).then(blogPost => {
+    req.prismic.api
+    .query(Prismic.Predicates.any("document.type", ["homepage", "blog_post"]))
+    .then(response => {
+      const blogPostsData = response.results.filter(item => item.type === 'blog_post');
+      const globalData = response.results.filter(item => item.type === 'homepage');
 
-      // Else display the 404 page
-    } else {
-      res.status(404).render("404");
-    }
+      if (blogPost) {
+        // If a document is returned, render the post
+        res.render("post", {
+          blogPosts: blogPostsData,
+          blogPost,
+          global: globalData[0].data
+        });
+  
+        // Else display the 404 page
+      } else {
+        res.status(404).render("404");
+      }
+    });
   });
 });
 
