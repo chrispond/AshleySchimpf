@@ -1,88 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en_CA">
   <head>
     <meta charset="utf-8" />
-    <title><%= home.name %> - <%= home.job_title %> | <%= home.tag_line %></title>
+    <title><%= global.name %> - <%= global.job_title %> | <%= global.tag_line %></title>
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i|Roboto:700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/styles/global.css" />
   </head>
 
   <body>
-    <h1><%= home.name %></h1>
-    <h2>
-      <%= home.job_title %>
-    </h2>
-    <h3>
-      <%= home.tag_line %>
-    </h3>
-    <img src="<%= home.profile_pic.url %>" />
+    <div id="page-wrapper">
+        <header class="page-header">
+            <div class="page-header-content">
+              <% if (global.profile_pic.url){ %>
+                <img src="<%= global.profile_pic.url%>" alt="<%= global.profile_pic.alt %>" width="85" height="85" />
+              <% } %>
+              
+              <p class="font-green">Live <span class="font-brown">Life</span> <span class="font-yellow">Honestly</span></p>
+              
+              <% if (global.name) { %>
+                <h2>
+                  <%= global.name %>
+                  <% if (global.job_title) { %>
+                    <br /> <span class="font-brown"><%= global.job_title %></span>
+                  <% } %>
+                </h2>
+              <% } %>
+              <div>
+                  <%- PrismicDOM.RichText.asHtml(global.about, ctx.linkResolver) %>
+                </div>
+            </div>
+          </header>
 
-    <div>
-      <%- PrismicDOM.RichText.asHtml(home.about, ctx.linkResolver) %>
-    </div>
+        <main role="main">
+          <section class="bg-white">
+            <%- PrismicDOM.RichText.asHtml(global.contact_title) %>
+            <ul class="connect">
+              <% global.social_media_accounts.forEach(function(account){ %>
+                <li>
+                  <a href="<%= account.url %>" target="_blank">
+                    <img src="<%= account.social_icon.url %>" with="85" height="85" alt="<%= account.social_icon.alt %>" />
+                  </a>
+                </li>
+              <% }); %>
+            </ul>
+            
+            <aside aria-labelledby="carouselheading">
+                <h2 id="carouselheading"><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
+                <ul>
+                    <% 
+                    const getStringMonth = month => { 
+                      const monthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                      return monthLabel[month]; 
+                    }; 
+                    
+                    const getStringDay = day => {
+                      return (day + (day > 0 ?
+                      ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10 > 3 ? 0 : 
+                      day % 10] : ''))
+                    }; %> 
+                    
+                    <%
+                      blogPosts.forEach(post => { 
+                        const date = PrismicDOM.Date(post.data.post_date); 
+                        const wordCount = post.data.body.reduce((accumulator, currentValue) => {
+                          const content = PrismicDOM.RichText.asText(currentValue.primary[currentValue.slice_type]);
+                          return accumulator + content.split(" ").length;
+                        }, 0);
+              
+                        // Read time based off average 200 words per minute
+                        const readTime = Math.ceil(wordCount / 200); 
+                    %>
+                  <li>
+                    <a href="blog/<%= post.uid %>">
+                      <h3><%= post.data.blog_title_short %></h3>
+                    </a>
+                    <p>
+                      <%= getStringMonth(date.getMonth()); %> <%=
+                      getStringDay(date.getDate()); %>, <%= date.getFullYear(); %> | ~<%=
+                      readTime %> min read
+                    </p>
+                  </li>
+                  <% }); %>
+                </ul>
+            </aside>
 
-    <%- PrismicDOM.RichText.asHtml(home.contact_title) %>
-    <ul class="connect">
-        <% home.social_media_accounts.forEach(function(account){ %>
-          <li>
-            <a href="<%= account.url %>" target="_blank">
-              <img src="<%= account.social_icon.url %>" with="85" height="85" alt="<%= account.social_icon.alt %>" />
-            </a>
-          </li>
-        <% }); %>
-      </ul>
+          </section>
+        </main>
+      </div>
 
-    <h2>
-      <%= PrismicDOM.RichText.asText(home.blog_feed_title) %>
-    </h2>
-
-    <ul>
-        <% 
-        const getStringMonth = month => { 
-          const monthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          return monthLabel[month]; 
-        }; 
-        
-        const getStringDay = day => {
-          return (day + (day > 0 ?
-          ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10 > 3 ? 0 : 
-          day % 10] : ''))
-        }; %> 
-        
-        <%
-          blogPosts.forEach(post => { 
-            const date = PrismicDOM.Date(post.data.post_date); 
-            const wordCount = post.data.body.reduce((accumulator, currentValue) => {
-              const content = PrismicDOM.RichText.asText(currentValue.primary[currentValue.slice_type]);
-              return accumulator + content.split(" ").length;
-            }, 0);
-  
-            // Read time based off average 200 words per minute
-            const readTime = Math.ceil(wordCount / 200); 
-        %>
-      <li>
-        <a href="blog/<%= post.uid %>">
-          <h3><%= post.data.blog_title_short %></h3>
-        </a>
-        <p>
-          <%= getStringMonth(date.getMonth()); %> <%=
-          getStringDay(date.getDate()); %>, <%= date.getFullYear(); %> | ~<%=
-          readTime %> min read
-        </p>
-      </li>
-      <% }); %>
-    </ul>
     <script type="application/ld+json">
       {
         "@context": "http://schema.org",
         "@id": "https://www.site.com/",
         "@type": "Person",
-        "name": "<%= home.name %>",
-        "jobTitle": "<%= home.job_title %>",
+        "name": "<%= global.name %>",
+        "jobTitle": "<%= global.job_title %>",
         "url": "https://www.site.com/",
-        "image": "<%= home.profile_pic.url %>",
-        "sameAs": [<% home.social_media_accounts.forEach(function(account){ %>
+        "image": "<%= global.profile_pic.url %>",
+        "sameAs": [<% global.social_media_accounts.forEach(function(account){ %>
             "<%= account.url %>",<% }); %>
         ]
       }
     </script>
+    <script src="/scripts/global.js"></script>
   </body>
 </html>

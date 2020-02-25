@@ -54,7 +54,7 @@ app.route('/').get((req, res) => {
       blogData = response;
 
       res.render("index", {
-        home: homeData.data,
+        global: homeData.data,
         blogPosts: blogData.results
       });
     });
