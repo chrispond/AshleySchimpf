@@ -5,7 +5,6 @@ const Prismic = require("prismic-javascript");
 const PrismicConfig = require("./prismic-configuration");
 const PrismicDOM = require("prismic-dom");
 const request = require("request");
-const serverless = require('serverless-http');
 
 const PORT = app.get("port");
 
@@ -13,8 +12,6 @@ app.listen(PORT, () => {
   Onboarding.trigger();
   process.stdout.write(`Point your browser to: http://localhost:${PORT}\n`);
 });
-
-module.exports.handler = serverless(app);
 
 // Middleware to inject prismic context
 app.use((req, res, next) => {

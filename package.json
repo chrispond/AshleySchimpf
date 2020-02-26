@@ -6,7 +6,8 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint *.js",
-    "test": "node -c *.js"
+    "test": "node -c *.js",
+    "build": "netlify-lambda build functions"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -16,6 +17,7 @@
     "express": "~4.16.1",
     "method-override": "~2.3.10",
     "morgan": "~1.9.0",
+    "netlify-lambda": "^1.6.3",
     "prismic-dom": "~2.0.4",
     "prismic-javascript": "~1.4.0",
     "pug": "^2.0.4",

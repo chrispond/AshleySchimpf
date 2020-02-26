@@ -15,6 +15,7 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
@@ -38,6 +39,7 @@ pids
 # Dependency directories
 node_modules
 jspm_packages
+.netlify
 
 # Output of 'npm pack'
 *.tgz.log
