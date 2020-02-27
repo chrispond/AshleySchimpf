@@ -1,9 +1,7 @@
 // Dependancies
 const express = require('express');
 const Prismic = require('prismic-javascript');
-const serverless = require('serverless-http');
 
-const app = express();
 const router = express.Router();
 
 const homeRouter = router.get('/', (request, response) => {
@@ -19,8 +17,4 @@ const homeRouter = router.get('/', (request, response) => {
 	});
 });
 
-const routerPath = process.env.NODE_ENV === 'dev' ? `/index` : `/.netlify/functions/index`;
-app.use(routerPath, router)
-
 module.exports = homeRouter;
-module.exports.handler = serverless(app);
