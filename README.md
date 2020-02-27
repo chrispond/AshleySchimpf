@@ -37,40 +37,6 @@ exports.Configuration = {
 
 You may have to restart your server.
 
-#### Deploy your NodeJS application
-
-An easy way to deploy your NodeJS application is to use [Heroku](http://www.heroku.com). Just follow these few simple steps once you have successfully [signed up](https://id.heroku.com/signup/www-header) and [installed the Heroku toolbelt](https://toolbelt.heroku.com/):
-
-Create a `Procfile` file at your application root, to declare the server command:
-
-```
-web: node app.js
-```
-
-Create a new Heroku application
-
-```
-$ heroku create
-```
-
-Push your code to heroku:
-
-```
-$ git push heroku master
-```
-
-Ensure you have at least one node running:
-
-```
-$ heroku ps:scale web=1
-```
-
-You can now browse your application online:
-
-```
-$ heroku open
-```
-
 #### Get started with prismic.io
 
 You can find out [how to get started with prismic.io](https://prismic.io/quickstart#?lang=node) and [our full documentation](https://prismic.io/docs).
@@ -79,10 +45,6 @@ You can find out [how to get started with prismic.io](https://prismic.io/quickst
 
 You'll find more information about how to use the development kit included in this starter project, by reading [its README file](https://github.com/prismicio/javascript-kit/blob/master/README.md).
 In this particular starter, we use the [prismic-nodejs kit](https://github.com/prismicio/prismic-nodejs/blob/master/README.md) based on the javascript-kit and which implement the prismic preview for Node.js.
-
-### Contribute to the starter project
-
-Contribution is open to all developer levels, read our "[Contribute to the official kits](https://prismic.io/docs/legacy/documentation/contribute-to-official-kits)" documentation to learn more.
 
 ### Licence
 
