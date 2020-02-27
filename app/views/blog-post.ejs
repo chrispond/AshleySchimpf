@@ -37,10 +37,10 @@
               <img src="<%= global.profile_pic.url%>" alt="<%= global.profile_pic.alt %>" width="85" height="85" />
             <% } %>
             
-            <p class="font-green">Live <span class="font-brown">Life</span> <span class="font-yellow">Honestly</span></p>
+            <p class="font-green tag-line">Live <span class="font-brown">Life</span> <span class="font-yellow">Honestly</span></p>
             
             <% if (isGuestAuthor || !isGuestAuthor && global.name) { %>
-              <h2>
+              <h2 class="author">
                 <%= blogPost.data.author_name || global.name %>
                 <% if (isGuestAuthor && blogPost.data.author_title || !isGuestAuthor && global.job_title) { %>
                   <br /> <span class="font-brown"><%= blogPost.data.author_title || global.job_title %></span>
