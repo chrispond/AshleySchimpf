@@ -1,2 +1,8 @@
 [build]
-    functions = "functions-build"
+functions = "build-functions"
+publish = "dist"
+
+[context.production]
+  publish = "project/output/"
+  command = "make publish"
+  environment = { NODE_VERSION = "12.16.1" }

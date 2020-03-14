@@ -115,9 +115,6 @@ ul li:last-child {
 /*------ INLINE ELEMENTS ------*/
 /*- INLINE: Anchor -*/
 a {
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  letter-spacing: 0;
   color: #6C8E78;
 }
 
@@ -186,43 +183,10 @@ body {
   }
 }
 /* Component Styles */
-form.boilerplate-calculator {
-  max-width: 400px;
-  padding: 30px 10px;
-  font-family: sans-serif;
-  font-size: 12px;
-  text-align: center;
-  background-color: #ececec;
-}
-form.boilerplate-calculator fieldset {
-  display: inline-block;
-  outline: none;
-  border: none;
-}
-form.boilerplate-calculator input,
-form.boilerplate-calculator select {
-  vertical-align: middle;
-}
-form.boilerplate-calculator input[type='number'] {
-  width: 80px;
-  height: 20px;
-  margin: 0 5px;
-  padding: 0;
-  text-indent: 3px;
-}
-form.boilerplate-calculator input[type='submit'] {
-  height: 23px;
-  text-transform: uppercase;
-  line-height: 20px;
-  color: #fff;
-  background: #333;
-  border: none;
-}
-
 .page-header {
   min-height: calc(12rem + 6rem);
   margin-bottom: 4.5rem;
-  padding: 3rem;
+  padding: 3rem 3rem 0 3rem;
   position: relative;
   overflow: hidden;
   text-align: left;
@@ -301,15 +265,26 @@ form.boilerplate-calculator input[type='submit'] {
   margin-bottom: 0.6rem;
   font-family: "Playfair Display", serif;
   font-weight: bold;
-  font-size: 2.8rem;
+  font-size: 2.1rem;
   font-style: italic;
   text-transform: capitalize;
   white-space: nowrap;
+}
+@media (min-width: 641px) {
+  .page-header .tag-line {
+    font-size: 2.4rem;
+  }
+}
+@media (min-width: 1281px) {
+  .page-header .tag-line {
+    font-size: 2.8rem;
+  }
 }
 .page-header .author {
   margin-bottom: 0;
   font-family: "Roboto", sans-serif;
   font-size: 1.6rem;
+  text-transform: none;
   color: #000;
 }
 .page-header-center {
@@ -329,8 +304,22 @@ form.boilerplate-calculator input[type='submit'] {
   margin-right: 0;
 }
 .page-header-about {
-  max-width: 80rem;
+  max-width: 60rem;
   margin: 0 auto;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+}
+@media (min-width: 641px) {
+  .page-header-about {
+    font-size: 1.7rem;
+    line-height: 2.6rem;
+  }
+}
+@media (min-width: 1281px) {
+  .page-header-about {
+    font-size: 1.8rem;
+    line-height: 2.8rem;
+  }
 }
 
 .cp-carousel {

@@ -40,10 +40,10 @@ if (cpCarouselsLength > 0) {
     };
 
     test.onSlideStart(slideIndex => {
-      console.log('--- Start', slideIndex);
+      // Do Stuff
     });
     test.onSlideStop(slideIndex => {
-      console.log('--- Stop', slideIndex);
+      // Do Stuff
     });
 
     const prevButton = item.querySelector('.cp-carousel-prev');
@@ -75,7 +75,7 @@ const cpTrimmedParagraphsLength = cpTrimmedParagraphs.length;
 if (cpTrimmedParagraphsLength > 0) {
   for (let i = 0; i < cpTrimmedParagraphsLength; i++) {
     const item = cpTrimmedParagraphs[i];
-    new CpTrimParagraph(item);
+    new CpTrimParagraph(item, 150);
   }
 }
 
