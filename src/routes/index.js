@@ -12,9 +12,9 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			fs.readFile(`${__dirname}src/views/index.ejs`, 'utf8', function(err, data) {
+			fs.readFile('/dist/views/index.ejs', 'utf8', function(err, data) {
 				if (err) {
-				  response.json({error: err});
+				  response.json({dir: __dirname, error: err});
 				} else {
 				  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
 				}
