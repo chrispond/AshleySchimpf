@@ -20,6 +20,11 @@ router.use(methodOverride());
 router.use(require('./middleware/prismic'));
 
 // Routes
+router.get('/', (request, response) => {
+    response.json({
+        "hello": "world"
+    });
+});
 router.use(require('./routes/index'));
 router.use(require('./routes/blog-post'));
 
