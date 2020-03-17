@@ -25,6 +25,7 @@
     "node-fetch": "^2.6.0",
     "prismic-dom": "^2.1.0",
     "prismic-javascript": "^2.2.0",
+    "raw-loader": "^4.0.0",
     "serverless-http": "^2.3.2"
   }
 }

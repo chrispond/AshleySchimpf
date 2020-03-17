@@ -12,11 +12,11 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			fs.readdir('./', function(err, items) {
-				console.log('****************************', items);
+			// fs.readdir('./', function(err, items) {
+			// 	console.log('****************************', items);
 			 
-				response.json({items: items, error: err});
-			});
+			// 	response.json({items: items, error: err});
+			// });
 			// fs.readFile('./src/views/index.ejs', 'utf8', function(err, data) {
 			// 	if (err) {
 			// 	  response.json({dir: __dirname, error: err});
@@ -24,6 +24,11 @@ const homeRouter = router.get('/index', (request, response) => {
 			// 	  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
 			// 	}
 			//   });
+
+			  response.render("index.ejs", {
+				// response.json({
+					global: homeResponse.data, blogPosts: blogResponse.results
+				});
 		})
 	});
 });
