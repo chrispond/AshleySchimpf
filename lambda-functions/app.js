@@ -23934,7 +23934,7 @@ const homeRouter = router.get('/index', (request, response) => {
       // 	console.log('****************************', items);
       // 	response.json({items: items, error: err});
       // });
-      fs.readFile(path.join(`${__dirname}src/views/index.ejs`), 'utf8', function (err, data) {
+      fs.readFile(path.join(`${__dirname}/src/views/index.ejs`), 'utf8', function (err, data) {
         if (err) {
           response.json({
             dir: __dirname,
