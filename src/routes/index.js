@@ -17,7 +17,11 @@ const homeRouter = router.get('/index', (request, response) => {
 			fs.readdir(__dirname, function(err, items) {
 				console.log('****************************', items);
 			 
-				response.json({items: items, error: err});
+				response.json({
+					dir: __dirname,
+					path: path,
+					items: items, 
+					error: err});
 			});
 
 			// fs.readFile(path.join(`${__dirname}/src/views/index.ejs`), 'utf8', function(err, data) {

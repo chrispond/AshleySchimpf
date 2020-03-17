@@ -23934,6 +23934,8 @@ const homeRouter = router.get('/index', (request, response) => {
       fs.readdir(__dirname, function (err, items) {
         console.log('****************************', items);
         response.json({
+          dir: __dirname,
+          path: path,
           items: items,
           error: err
         });
