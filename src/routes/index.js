@@ -9,8 +9,8 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			response.render("index.ejs", {
-			// response.json({
+			// response.render("index.ejs", {
+			response.json({
 				global: homeResponse.data,
 				blogPosts: blogResponse.results
 			});
