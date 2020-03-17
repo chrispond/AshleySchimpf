@@ -2,7 +2,6 @@
 const express = require('express');
 const Prismic = require('prismic-javascript');
 
-
 const router = express.Router();
 
 const homeRouter = router.get('/index', (request, response) => {
@@ -10,11 +9,19 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			response.render("index.ejs", {
+			response.render('index.ejs', {
 			// response.json({
 				global: homeResponse.data,
 				blogPosts: blogResponse.results
-			});
+			}, (error, html) => {
+                if(error){
+                    response.json({
+                        error: error
+                    });
+                } else {
+					response.send(html);
+				}
+            });
 		})
 	});
 });

@@ -9,7 +9,7 @@ const app = express();
 const router = express.Router();
 
 // Template Settings
-app.set("views", path.join(__dirname + "dist/views"));
+app.set("views", path.join('src/views'));
 app.engine('ejs', require('ejs').__express);
 
 // Middleware
