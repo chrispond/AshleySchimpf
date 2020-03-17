@@ -12,7 +12,7 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			fs.readFile('src/views/index.ejs', 'utf8', function(err, data) {
+			fs.readFile(`${__dirname}src/views/index.ejs`, 'utf8', function(err, data) {
 				if (err) {
 				  response.json({error: err});
 				} else {
