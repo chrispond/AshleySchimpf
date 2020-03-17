@@ -2,10 +2,5 @@
 functions = "lambda-functions"
 publish = "dist"
 
-[[redirects]]
-  from = '/'
-  to = '/.netlify/functions/:splat'
-  status = 200
-
 [context.production]
   environment = { NODE_VERSION = "12.16.1" }

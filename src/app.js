@@ -22,7 +22,8 @@ router.use(require('./middleware/prismic'));
 // Routes
 router.get('/', (request, response) => {
     response.json({
-        "hello": "world"
+        "hello": "world",
+        "rootDir": __dirname
     });
 });
 router.use(require('./routes/index'));

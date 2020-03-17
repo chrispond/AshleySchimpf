@@ -9518,7 +9518,8 @@ router.use(__webpack_require__(147)); // Routes
 
 router.get('/', (request, response) => {
   response.json({
-    "hello": "world"
+    "hello": "world",
+    "rootDir": __dirname
   });
 });
 router.use(__webpack_require__(153));
