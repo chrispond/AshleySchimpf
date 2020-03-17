@@ -7,6 +7,6 @@ module.exports = {
     },
     target: 'node',
     node: {
-      __dirname: true,
+      __dirname: false,
     }
   };

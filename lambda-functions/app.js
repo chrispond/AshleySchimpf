@@ -9491,7 +9491,7 @@ var a=/["'&<>]/;t.exports=e},function(t,n,r){!function(n,r){t.exports=function()
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(__dirname) {// Dependancies
+// Dependancies
 const bodyParser = __webpack_require__(32);
 
 const express = __webpack_require__(28);
@@ -9526,7 +9526,6 @@ router.use(__webpack_require__(153));
 router.use(__webpack_require__(154));
 app.use('/.netlify/functions/app/', router);
 module.exports.handler = serverless(app);
-/* WEBPACK VAR INJECTION */}.call(this, ""))
 
 /***/ }),
 /* 63 */
@@ -23914,7 +23913,7 @@ module.exports = {
 /* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(__dirname) {// Dependancies
+// Dependancies
 const express = __webpack_require__(28);
 
 const Prismic = __webpack_require__(31);
@@ -23954,7 +23953,6 @@ const homeRouter = router.get('/index', (request, response) => {
   });
 });
 module.exports = homeRouter;
-/* WEBPACK VAR INJECTION */}.call(this, "routes"))
 
 /***/ }),
 /* 154 */
