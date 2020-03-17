@@ -16,7 +16,7 @@ app.engine('ejs', require('ejs').__express);
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride());
-// router.use('/public', express.static('./dist/public'));
+router.use('/public', express.static('./dist/public'));
 router.use(require('./middleware/prismic'));
 
 // Routes

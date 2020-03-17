@@ -18,8 +18,8 @@ const blogPostRouter = router.get("/blog/:uid", (request, response) => {
   
 				if (blogPost) {
 				// If a document is returned, render the post
-				response.render("blog-post.ejs", {
-				//response.json({
+				// response.render("blog-post.ejs", {
+				response.json({
 					blogPosts: blogPostsData,
 					blogPost,
 					global: globalData[0].data
