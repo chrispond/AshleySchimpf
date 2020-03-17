@@ -7,7 +7,6 @@ const fs = require('fs');
 const path = require("path");
 
 const router = express.Router();
-// app.set("views", path.join(`${__dirname}src/views`));
 
 const homeRouter = router.get('/index', (request, response) => {
 	request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
@@ -20,7 +19,7 @@ const homeRouter = router.get('/index', (request, response) => {
 			// 	response.json({items: items, error: err});
 			// });
 
-			fs.readFile(path.join(`src/views/index.ejs`), 'utf8', function(err, data) {
+			fs.readFile(path.join(`${__dirname}src/views/index.ejs`), 'utf8', function(err, data) {
 				if (err) {
 				  response.json({dir: __dirname, error: err});
 				} else {

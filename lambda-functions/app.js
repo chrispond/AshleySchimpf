@@ -23926,8 +23926,7 @@ const fs = __webpack_require__(4);
 
 const path = __webpack_require__(0);
 
-const router = express.Router(); // app.set("views", path.join(`${__dirname}src/views`));
-
+const router = express.Router();
 const homeRouter = router.get('/index', (request, response) => {
   request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
     request.prismic.api.query(Prismic.Predicates.at("document.type", "blog_post")).then(blogResponse => {
@@ -23935,7 +23934,7 @@ const homeRouter = router.get('/index', (request, response) => {
       // 	console.log('****************************', items);
       // 	response.json({items: items, error: err});
       // });
-      fs.readFile(path.join(`src/views/index.ejs`), 'utf8', function (err, data) {
+      fs.readFile(path.join(`${__dirname}src/views/index.ejs`), 'utf8', function (err, data) {
         if (err) {
           response.json({
             dir: __dirname,
