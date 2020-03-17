@@ -23914,7 +23914,7 @@ module.exports = {
 /* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Dependancies
+/* WEBPACK VAR INJECTION */(function(__dirname) {// Dependancies
 const express = __webpack_require__(28);
 
 const Prismic = __webpack_require__(31);
@@ -23925,7 +23925,10 @@ const ejs = __webpack_require__(60);
 
 const fs = __webpack_require__(4);
 
-const router = express.Router();
+const path = __webpack_require__(0);
+
+const router = express.Router(); // app.set("views", path.join(`${__dirname}src/views`));
+
 const homeRouter = router.get('/index', (request, response) => {
   request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
     request.prismic.api.query(Prismic.Predicates.at("document.type", "blog_post")).then(blogResponse => {
@@ -23933,22 +23936,25 @@ const homeRouter = router.get('/index', (request, response) => {
       // 	console.log('****************************', items);
       // 	response.json({items: items, error: err});
       // });
-      // fs.readFile('./src/views/index.ejs', 'utf8', function(err, data) {
-      // 	if (err) {
-      // 	  response.json({dir: __dirname, error: err});
-      // 	} else {
-      // 	  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
-      // 	}
-      //   });
-      response.render("index.ejs", {
-        // response.json({
-        global: homeResponse.data,
-        blogPosts: blogResponse.results
+      fs.readFile(path.join(`src/views/index.ejs`), 'utf8', function (err, data) {
+        if (err) {
+          response.json({
+            dir: __dirname,
+            error: err
+          });
+        } else {
+          response.send(ejs.render(data, {
+            global: homeResponse.data,
+            blogPosts: blogResponse.results,
+            PrismicDOM
+          }));
+        }
       });
     });
   });
 });
 module.exports = homeRouter;
+/* WEBPACK VAR INJECTION */}.call(this, "routes"))
 
 /***/ }),
 /* 154 */

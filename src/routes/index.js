@@ -4,8 +4,10 @@ const Prismic = require('prismic-javascript');
 const PrismicDOM = require('prismic-dom');
 const ejs = require('ejs');
 const fs = require('fs');
+const path = require("path");
 
 const router = express.Router();
+// app.set("views", path.join(`${__dirname}src/views`));
 
 const homeRouter = router.get('/index', (request, response) => {
 	request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
@@ -17,18 +19,14 @@ const homeRouter = router.get('/index', (request, response) => {
 			 
 			// 	response.json({items: items, error: err});
 			// });
-			// fs.readFile('./src/views/index.ejs', 'utf8', function(err, data) {
-			// 	if (err) {
-			// 	  response.json({dir: __dirname, error: err});
-			// 	} else {
-			// 	  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
-			// 	}
-			//   });
 
-			  response.render("index.ejs", {
-				// response.json({
-					global: homeResponse.data, blogPosts: blogResponse.results
-				});
+			fs.readFile(path.join(`src/views/index.ejs`), 'utf8', function(err, data) {
+				if (err) {
+				  response.json({dir: __dirname, error: err});
+				} else {
+				  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
+				}
+			  });
 		})
 	});
 });
