@@ -13,12 +13,14 @@ const homeRouter = router.get('/index', (request, response) => {
 			// response.json({
 				global: homeResponse.data,
 				blogPosts: blogResponse.results
+			}, (error, data) => {
+				if(error){
+					response.json({
+						error: error
+					});
+				}
 			});
-		}).catch(error => {
-			response.json({
-				"error": error.message
-			});
-		  });;
+		})
 	});
 });
 
