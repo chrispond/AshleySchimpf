@@ -4,7 +4,7 @@ publish = "dist"
 
 [[redirects]]
   from = "/"
-  to = "/.netlify/functions/app"
+  to = "/.netlify/functions/"
   status = 200
 
 [context.production]
