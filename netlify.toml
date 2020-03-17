@@ -1,5 +1,5 @@
 [build]
-functions = "build-functions"
+functions = "lambda-functions"
 publish = "dist"
 
 [context.production]
