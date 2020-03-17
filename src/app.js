@@ -9,14 +9,14 @@ const app = express();
 const router = express.Router();
 
 // Template Settings
-app.set("views", path.join(__dirname + "src/views"));
+app.set("views", path.join("./dist/views"));
 app.engine('ejs', require('ejs').__express);
 
 // Middleware
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride());
-router.use('/public', express.static('./dist/public'));
+// router.use('/public', express.static('./dist/public'));
 router.use(require('./middleware/prismic'));
 
 // Routes

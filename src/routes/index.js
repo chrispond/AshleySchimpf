@@ -2,6 +2,7 @@
 const express = require('express');
 const Prismic = require('prismic-javascript');
 
+
 const router = express.Router();
 
 const homeRouter = router.get('/index', (request, response) => {
@@ -13,12 +14,6 @@ const homeRouter = router.get('/index', (request, response) => {
 			// response.json({
 				global: homeResponse.data,
 				blogPosts: blogResponse.results
-			}, (error, data) => {
-				if(error){
-					response.json({
-						error: error
-					});
-				}
 			});
 		})
 	});
