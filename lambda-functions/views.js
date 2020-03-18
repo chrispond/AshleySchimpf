@@ -94,13 +94,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handler", function() { return handler; });
 let fs = __webpack_require__(2);
 
-var contents = fs.readFileSync(`./src/views/index.ejs`, 'utf8');
+const htmlTemplate = __webpack_require__(156)(`${__dirname}views/index.ejs`);
+
 async function handler(event, context) {
   return {
     statusCode: 200,
-    body: contents
+    body: htmlTemplate
   };
 }
+
+/***/ }),
+
+/***/ 156:
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./views/index.ejs": 157
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 156;
+
+/***/ }),
+
+/***/ 157:
+/***/ (function(module, exports) {
+
+throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> <!DOCTYPE html>\n| <html lang=\"en_CA\">\n|   <head>");
 
 /***/ }),
 

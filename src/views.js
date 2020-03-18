@@ -1,5 +1,5 @@
 let fs = require("fs");
-const htmlTemplate = require(`./views/index.ejs`);
+const htmlTemplate = require(`${__dirname}views/index.ejs`);
 
 export async function handler(event, context) {
     return {
