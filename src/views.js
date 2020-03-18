@@ -24,4 +24,19 @@ const viewsHandler = async () => {
 //   }
 // };
 
-exports.handler = viewsHandler;
+exports.handler = async () => {
+    try {
+      const content = await fs.readdir('./views', (error, files) => {
+        console.log('----', error, files);
+    });
+      return {
+        statusCode: 200,
+        body: content
+      };
+    } catch (e) {
+      return {
+        statusCode: 500,
+        body: e
+      };
+    }
+  };
