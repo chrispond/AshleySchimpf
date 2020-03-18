@@ -1,42 +1,10 @@
-const fs = require("fs").promises;
-const path = require("path");
+const fs = require('fs')
 
-const viewsHandler = async () => {
-    fs.readdir('views', (error, files) => {
-        console.log('----', error, files);
-    });
-};
+const contents = fs.readFileSync(require.resolve('./views/index.ejs'))
 
-// const viewsHandler = async () => {
-//   try {
-//     const content = await fs.readFile(path.join(__dirname, `${fileName}.ejs`), {
-//       encoding: "utf-8"
-//     });
-//     return {
-//       statusCode: 200,
-//       body: content
-//     };
-//   } catch (e) {
-//     return {
-//       statusCode: 500,
-//       body: e
-//     };
-//   }
-// };
-
-exports.handler = async () => {
-    try {
-      const content = await fs.readdir('./views', (error, files) => {
-        console.log('----', error, files);
-    });
-      return {
-        statusCode: 200,
-        body: content
-      };
-    } catch (e) {
-      return {
-        statusCode: 500,
-        body: e
-      };
-    }
-  };
+exports.handler = function(event, context, callback) {
+  callback(null, {
+  statusCode: 200,
+  body: `${contents}`
+  });
+}
