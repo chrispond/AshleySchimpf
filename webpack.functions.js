@@ -3,5 +3,20 @@ module.exports = {
     target: 'node',
     node: {
       __dirname: false,
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(ejs)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[path][name].[ext]'
+              }
+            },
+          ],
+        },
+      ],
     }
   };

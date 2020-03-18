@@ -94,22 +94,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handler", function() { return handler; });
 let fs = __webpack_require__(2);
 
-const htmlTemplate = __webpack_require__(156)(`${__dirname}/views/index.ejs`);
+const rContents = __webpack_require__(157)(`${__dirname}/views/index.ejs`);
 
 async function handler(event, context) {
   return {
     statusCode: 200,
-    body: htmlTemplate
+    body: rContents
   };
 }
 
 /***/ }),
 
 /***/ 156:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "views/index.ejs");
+
+/***/ }),
+
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./views/index.ejs": 157
+	"./views/index.ejs": 156
 };
 
 
@@ -130,14 +139,7 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 156;
-
-/***/ }),
-
-/***/ 157:
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> <!DOCTYPE html>\n| <html lang=\"en_CA\">\n|   <head>");
+webpackContext.id = 157;
 
 /***/ }),
 
