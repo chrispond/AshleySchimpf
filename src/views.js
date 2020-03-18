@@ -1,10 +1,22 @@
-const fs = require('fs')
 
-const contents = fs.readFileSync(require.resolve('./views/index.ejs'))
+const fs = require("fs").promises;
+const path = require("path");
 
-exports.handler = function(event, context, callback) {
-  callback(null, {
-  statusCode: 200,
-  body: `${contents}`
-  });
-}
+const currentDir = process.env.LAMBDA_TASK_ROOT;
+
+exports.handler = async () => {
+  try {
+    const content = await fs.readFile(path.join(currentDir, "/views/index.ejs"), {
+      encoding: "utf-8"
+    });
+    return {
+      statusCode: 200,
+      body: content
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      body: e
+    };
+  }
+};
