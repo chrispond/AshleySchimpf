@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 155);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -93,38 +93,30 @@ module.exports = require("path");
 
 /***/ }),
 
+/***/ 155:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handler", function() { return handler; });
+let fs = __webpack_require__(2);
+
+let path = __webpack_require__(0);
+
+async function handler(event, context) {
+  var contents = fs.readFileSync(`./src/views/index.ejs`, 'utf8');
+  return {
+    statusCode: 200,
+    body: contents
+  };
+}
+
+/***/ }),
+
 /***/ 2:
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
-
-/***/ }),
-
-/***/ 32:
-/***/ (function(module, exports, __webpack_require__) {
-
-const fs = __webpack_require__(2).promises;
-
-const path = __webpack_require__(0);
-
-const currentDir = process.env.LAMBDA_TASK_ROOT;
-
-exports.handler = async () => {
-  try {
-    const content = await fs.readFile(path.join(currentDir, "/views/index.ejs"), {
-      encoding: "utf-8"
-    });
-    return {
-      statusCode: 200,
-      body: content
-    };
-  } catch (e) {
-    return {
-      statusCode: 500,
-      body: e
-    };
-  }
-};
 
 /***/ })
 
