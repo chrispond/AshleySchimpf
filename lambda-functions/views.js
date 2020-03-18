@@ -94,7 +94,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handler", function() { return handler; });
 let fs = __webpack_require__(2);
 
-const htmlTemplate = __webpack_require__(156)(`${__dirname}views/index.ejs`);
+const htmlTemplate = __webpack_require__(156)(`${__dirname}/views/index.ejs`);
 
 async function handler(event, context) {
   return {
