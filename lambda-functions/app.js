@@ -108,12 +108,6 @@ if (typeof process !== 'undefined' && process.type === 'renderer') {
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("fs");
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -641,10 +635,16 @@ function DeprecationError (namespace, message, stack) {
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 module.exports = require("stream");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
 
 /***/ }),
 /* 5 */
@@ -674,7 +674,7 @@ module.exports = require("http");
 var Buffer = __webpack_require__(29).Buffer
 var contentDisposition = __webpack_require__(51);
 var contentType = __webpack_require__(14);
-var deprecate = __webpack_require__(3)('express');
+var deprecate = __webpack_require__(2)('express');
 var flatten = __webpack_require__(22);
 var mime = __webpack_require__(30).mime;
 var etag = __webpack_require__(52);
@@ -1408,7 +1408,7 @@ function parse(val) {
  * @private
  */
 
-var deprecate = __webpack_require__(3)('http-errors')
+var deprecate = __webpack_require__(2)('http-errors')
 var setPrototypeOf = __webpack_require__(15)
 var statuses = __webpack_require__(16)
 var inherits = __webpack_require__(67)
@@ -3176,20 +3176,20 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 var createError = __webpack_require__(11)
 var debug = __webpack_require__(1)('send')
-var deprecate = __webpack_require__(3)('send')
+var deprecate = __webpack_require__(2)('send')
 var destroy = __webpack_require__(108)
 var encodeUrl = __webpack_require__(20)
 var escapeHtml = __webpack_require__(21)
 var etag = __webpack_require__(52)
 var fresh = __webpack_require__(54)
-var fs = __webpack_require__(2)
+var fs = __webpack_require__(4)
 var mime = __webpack_require__(109)
 var ms = __webpack_require__(111)
 var onFinished = __webpack_require__(19)
 var parseRange = __webpack_require__(55)
 var path = __webpack_require__(0)
 var statuses = __webpack_require__(16)
-var Stream = __webpack_require__(4)
+var Stream = __webpack_require__(3)
 var util = __webpack_require__(17)
 
 /**
@@ -4315,7 +4315,7 @@ function setHeaders (res, headers) {
  * @private
  */
 
-var deprecate = __webpack_require__(3)('body-parser')
+var deprecate = __webpack_require__(2)('body-parser')
 
 /**
  * Cache of loaded parsers.
@@ -5665,7 +5665,7 @@ var Layer = __webpack_require__(49);
 var methods = __webpack_require__(23);
 var mixin = __webpack_require__(24);
 var debug = __webpack_require__(1)('express:router');
-var deprecate = __webpack_require__(3)('express');
+var deprecate = __webpack_require__(2)('express');
 var flatten = __webpack_require__(22);
 var parseUrl = __webpack_require__(9);
 var setPrototypeOf = __webpack_require__(15)
@@ -7265,7 +7265,7 @@ module.exports = etag
  */
 
 var crypto = __webpack_require__(53)
-var Stats = __webpack_require__(2).Stats
+var Stats = __webpack_require__(4).Stats
 
 /**
  * Module variables.
@@ -8425,7 +8425,7 @@ function coerce(val) {
 
 
 const http = __webpack_require__(5);
-const stream = __webpack_require__(4);
+const stream = __webpack_require__(3);
 
 const headerEnd = '\r\n\r\n';
 
@@ -8614,7 +8614,7 @@ module.exports = class ServerlessResponse extends http.ServerResponse {
  * @public
  */
 
-var fs = __webpack_require__(2);
+var fs = __webpack_require__(4);
 var path = __webpack_require__(0);
 var utils = __webpack_require__(145);
 
@@ -9519,11 +9519,12 @@ router.use(__webpack_require__(147)); // Routes
 router.get('/', (request, response) => {
   response.json({
     "hello": "world",
-    "rootDir": __dirname
+    "rootDir": __dirname,
+    "ENV": "production"
   });
 });
 router.use(__webpack_require__(153));
-router.use(__webpack_require__(154));
+router.use(__webpack_require__(155));
 app.use('/.netlify/functions/app/', router);
 module.exports.handler = serverless(app);
 
@@ -10367,7 +10368,7 @@ function createWritableStdioStream (fd) {
       break;
 
     case 'FILE':
-      var fs = __webpack_require__(2);
+      var fs = __webpack_require__(4);
       stream = new fs.SyncWriteStream(fd, { autoClose: false });
       stream._type = 'fs';
       break;
@@ -12995,7 +12996,7 @@ module.exports = JSON.parse("[[\"8740\",\"䏰䰲䘃䖦䕸𧉧䵷䖳𧲱䳢𧳅�
 
 
 var Buffer = __webpack_require__(8).Buffer,
-    Transform = __webpack_require__(4).Transform;
+    Transform = __webpack_require__(3).Transform;
 
 
 // == Exports ==================================================================
@@ -13294,7 +13295,7 @@ module.exports = function (iconv) {
 
         // -- Readable -------------------------------------------------------------
         if (iconv.supportsStreams) {
-            var Readable = __webpack_require__(4).Readable;
+            var Readable = __webpack_require__(3).Readable;
 
             original.ReadableSetEncoding = Readable.prototype.setEncoding;
             Readable.prototype.setEncoding = function setEncoding(enc, options) {
@@ -13328,7 +13329,7 @@ module.exports = function (iconv) {
         Buffer.prototype.write = original.BufferWrite;
 
         if (iconv.supportsStreams) {
-            var Readable = __webpack_require__(4).Readable;
+            var Readable = __webpack_require__(3).Readable;
 
             Readable.prototype.setEncoding = original.ReadableSetEncoding;
             delete Readable.prototype.collect;
@@ -13999,7 +14000,7 @@ var bytes = __webpack_require__(10)
 var contentType = __webpack_require__(14)
 var createError = __webpack_require__(11)
 var debug = __webpack_require__(1)('body-parser:urlencoded')
-var deprecate = __webpack_require__(3)('body-parser')
+var deprecate = __webpack_require__(2)('body-parser')
 var read = __webpack_require__(18)
 var typeis = __webpack_require__(12)
 
@@ -15013,7 +15014,7 @@ var http = __webpack_require__(5);
 var compileETag = __webpack_require__(6).compileETag;
 var compileQueryParser = __webpack_require__(6).compileQueryParser;
 var compileTrust = __webpack_require__(6).compileTrust;
-var deprecate = __webpack_require__(3)('express');
+var deprecate = __webpack_require__(2)('express');
 var flatten = __webpack_require__(22);
 var merge = __webpack_require__(24);
 var resolve = __webpack_require__(0).resolve;
@@ -16178,7 +16179,7 @@ exports.init = function(app){
 
 var debug = __webpack_require__(1)('express:view');
 var path = __webpack_require__(0);
-var fs = __webpack_require__(2);
+var fs = __webpack_require__(4);
 
 /**
  * Module variables.
@@ -16377,8 +16378,8 @@ webpackEmptyContext.id = 107;
  * @private
  */
 
-var ReadStream = __webpack_require__(2).ReadStream
-var Stream = __webpack_require__(4)
+var ReadStream = __webpack_require__(4).ReadStream
+var Stream = __webpack_require__(3)
 
 /**
  * Module exports.
@@ -16446,7 +16447,7 @@ function onOpenClose() {
 /***/ (function(module, exports, __webpack_require__) {
 
 var path = __webpack_require__(0);
-var fs = __webpack_require__(2);
+var fs = __webpack_require__(4);
 
 function Mime() {
   // Map of extension -> mime type
@@ -17541,7 +17542,7 @@ module.exports = function(module) {
  */
 
 var accepts = __webpack_require__(116);
-var deprecate = __webpack_require__(3)('express');
+var deprecate = __webpack_require__(2)('express');
 var isIP = __webpack_require__(38).isIP;
 var typeis = __webpack_require__(12);
 var http = __webpack_require__(5);
@@ -19303,7 +19304,7 @@ function splitParameters(str) {
 
 var Buffer = __webpack_require__(29).Buffer
 var contentDisposition = __webpack_require__(51);
-var deprecate = __webpack_require__(3)('express');
+var deprecate = __webpack_require__(2)('express');
 var encodeUrl = __webpack_require__(20);
 var escapeHtml = __webpack_require__(21);
 var http = __webpack_require__(5);
@@ -22465,9 +22466,9 @@ FetchError.prototype.name = 'FetchError';
  * Body interface provides common methods for Request and Response
  */
 
-const Stream = __webpack_require__(4);
+const Stream = __webpack_require__(3);
 
-var _require = __webpack_require__(4);
+var _require = __webpack_require__(3);
 
 const PassThrough = _require.PassThrough;
 
@@ -23669,7 +23670,7 @@ function getNodeRequestOptions(request) {
 const http = __webpack_require__(5);
 const https = __webpack_require__(151);
 
-var _require$3 = __webpack_require__(4);
+var _require$3 = __webpack_require__(3);
 
 const PassThrough$1 = _require$3.PassThrough;
 
@@ -23922,9 +23923,11 @@ const PrismicDOM = __webpack_require__(61);
 
 const ejs = __webpack_require__(60);
 
-const fs = __webpack_require__(2);
+const fs = __webpack_require__(4);
 
 const path = __webpack_require__(0);
+
+const indexTemplate = __webpack_require__(154);
 
 const router = express.Router(); // const currentDir = process.env.LAMBDA_TASK_ROOT;
 
@@ -23953,6 +23956,14 @@ module.exports = homeRouter;
 
 /***/ }),
 /* 154 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "views/index.ejs");
+
+/***/ }),
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Dependancies

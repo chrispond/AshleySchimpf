@@ -5,6 +5,7 @@ const PrismicDOM = require('prismic-dom');
 const ejs = require('ejs');
 const fs = require('fs');
 const path = require("path");
+const indexTemplate = require(`../views/index.ejs`);
 
 const router = express.Router();
 // const currentDir = process.env.LAMBDA_TASK_ROOT;

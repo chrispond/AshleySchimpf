@@ -23,7 +23,8 @@ router.use(require('./middleware/prismic'));
 router.get('/', (request, response) => {
     response.json({
         "hello": "world",
-        "rootDir": __dirname
+        "rootDir": __dirname,
+        "ENV": process.env.NODE_ENV
     });
 });
 router.use(require('./routes/index'));
