@@ -15,14 +15,9 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			fs.readdir(__dirname, function(err, items) {
-				console.log('****************************', items);
-			 
+			fs.readdir(__dirname, function(err, items) {			 
 				response.json({
-					dir: __dirname,
-					path: path,
-					items: items, 
-					error: err});
+					dir: __dirname});
 			});
 
 			// fs.readFile(path.join(`${__dirname}/index.ejs`), 'utf8', function(err, data) {
