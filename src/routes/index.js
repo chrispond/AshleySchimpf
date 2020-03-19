@@ -15,23 +15,23 @@ const homeRouter = router.get('/index', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			// fs.readdir(__dirname, function(err, items) {
-			// 	console.log('****************************', items);
+			fs.readdir(__dirname, function(err, items) {
+				console.log('****************************', items);
 			 
-			// 	response.json({
-			// 		dir: __dirname,
-			// 		path: path,
-			// 		items: items, 
-			// 		error: err});
-			// });
+				response.json({
+					dir: __dirname,
+					path: path,
+					items: items, 
+					error: err});
+			});
 
-			fs.readFile(path.join(`${__dirname}/index.ejs`), 'utf8', function(err, data) {
-				if (err) {
-				  response.json({dir: __dirname, error: err});
-				} else {
-				  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
-				}
-			  });
+			// fs.readFile(path.join(`${__dirname}/index.ejs`), 'utf8', function(err, data) {
+			// 	if (err) {
+			// 	  response.json({dir: __dirname, error: err});
+			// 	} else {
+			// 	  response.send(ejs.render(data, {global: homeResponse.data, blogPosts: blogResponse.results, PrismicDOM}));
+			// 	}
+			//   });
 		})
 	});
 });
