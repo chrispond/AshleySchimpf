@@ -7,16 +7,9 @@ module.exports = {
     module: {
       rules: [
         {
-          test: /\.(ejs)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: '[name].[ext]'
-              }
-            },
-          ],
-        },
+          test: /\.ejs$/i,
+          use: 'raw-loader',
+        }
       ],
     }
   };
