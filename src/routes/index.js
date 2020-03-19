@@ -17,7 +17,8 @@ const homeRouter = router.get('/index', (request, response) => {
 		.then(blogResponse => {
 			fs.readdir(__dirname, function(err, items) {			 
 				response.json({
-					dir: __dirname});
+					dir: __dirname,
+					items: items});
 			});
 
 			// fs.readFile(path.join(`${__dirname}/index.ejs`), 'utf8', function(err, data) {
