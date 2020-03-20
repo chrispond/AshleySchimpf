@@ -9,24 +9,15 @@ const app = express();
 const router = express.Router();
 
 // Template Settings
-app.set("views", path.join(`${__dirname}src/views`));
-app.engine('ejs', require('ejs').__express);
+app.set('view engine', 'ejs');
 
 // Middleware
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride());
-// router.use('/public', express.static('./dist/public'));
 router.use(require('./middleware/prismic'));
 
 // Routes
-router.get('/', (request, response) => {
-    response.json({
-        "hello": "world",
-        "rootDir": __dirname,
-        "ENV": process.env.NODE_ENV
-    });
-});
 router.use(require('./routes/index'));
 router.use(require('./routes/blog-post'));
 

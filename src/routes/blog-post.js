@@ -1,6 +1,9 @@
 // Dependancies
 const express = require('express');
 const Prismic = require('prismic-javascript');
+const PrismicDOM = require('prismic-dom');
+const ejs = require('ejs');
+const blogTemplate = require(`../views/blog-post.ejs`);
 
 const router = express.Router();
 
@@ -17,19 +20,20 @@ const blogPostRouter = router.get("/blog/:uid", (request, response) => {
 				const globalData = prismicResponse.results.filter(item => item.type === 'homepage');
   
 				if (blogPost) {
-				// If a document is returned, render the post
-				response.render("blog-post.ejs", {
-				// response.json({
-					blogPosts: blogPostsData,
-					blogPost,
-					global: globalData[0].data
-				});
-			
-				// Else display the 404 page
+					response.send(
+						ejs.render(
+							blogTemplate.default, 
+							{
+								blogPosts: blogPostsData,
+								blogPost,
+								global: globalData[0].data,
+								PrismicDOM: PrismicDOM
+							})
+					);
 				} else {
 					request.status(404).render("404");
 				}
-    });
+    	});
 	});
 });
 

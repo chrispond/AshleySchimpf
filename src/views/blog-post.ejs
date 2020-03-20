@@ -50,7 +50,7 @@
         </header>
         <main role="main">
             <section class="bg-white">
-                <%- PrismicDOM.RichText.asHtml(blogPost.data.blog_title_long, ctx.linkResolver)%>
+                <h1><%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long) %></h1>
 
                 <div>
                   <% blogPost.data.body.forEach(function(slice){ %>
