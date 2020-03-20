@@ -4,8 +4,4 @@ publish = "dist"
 
 [context.production]
   environment = { NODE_VERSION = "12.16.1" }
-
-[[redirects]]
-  from = "/test"
-  to = "/.netlify/functions/"
-  status = 200
+  
