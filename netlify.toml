@@ -5,6 +5,8 @@ publish = "dist"
 [[redirects]]
   from = "/blog/*"
   to = "/.netlify/functions/app/blog/:splat"
+  status = 200
+  force = true
 
 [[redirects]]
 from = "/"
