@@ -12,14 +12,18 @@ const router = express.Router();
 app.set('view engine', 'ejs');
 
 // Middleware
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(methodOverride());
-router.use(require('./middleware/prismic'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride());
+app.use(require('./middleware/prismic'));
 
 // Routes
-app.use('/', require('./routes/index'));
-app.use("/blog/:uid", require('./routes/blog-post'));
+// router.use(require('./routes/index'));
+// router.use(require('./routes/blog-post'));
+
+router.get('/', (request, response) => {
+    response.json({"test": "test"});
+});
 
 app.use('/.netlify/functions/app/', router);
 
