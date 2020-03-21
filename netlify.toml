@@ -3,8 +3,8 @@ functions = "lambda-functions"
 publish = "dist"
 
 [[redirects]]
-from = "/dist/*"
-to = "/dist/:splat"
+from = "/public/*"
+to = "/public/:splat"
 status = 200
 force = true
     
