@@ -23736,8 +23736,8 @@ const ejs = __webpack_require__(61);
 
 const indexTemplate = __webpack_require__(154);
 
-const router = express.Router();
-const homeRouter = router.get('/', (request, response) => {
+const app = express();
+const homeRouter = app.get('/', (request, response) => {
   request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
     request.prismic.api.query(Prismic.Predicates.at("document.type", "blog_post")).then(blogResponse => {
       response.send(ejs.render(indexTemplate.default, {
@@ -23953,8 +23953,8 @@ const ejs = __webpack_require__(61);
 
 const blogTemplate = __webpack_require__(156);
 
-const router = express.Router();
-const blogPostRouter = router.get("/blog/:uid", (request, response) => {
+const app = express();
+const blogPostRouter = app.get("/blog/:uid", (request, response) => {
   const uid = request.params.uid; // Query the post by its uid
 
   request.prismic.api.getByUID("blog_post", uid).then(blogPost => {

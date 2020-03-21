@@ -5,9 +5,9 @@ const PrismicDOM = require('prismic-dom');
 const ejs = require('ejs');
 const indexTemplate = require(`../views/index.ejs`);
 
-const router = express.Router();
+const app = express();
 
-const homeRouter = router.get('/', (request, response) => {
+const homeRouter = app.get('/', (request, response) => {
 	request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
