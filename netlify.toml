@@ -3,8 +3,12 @@ functions = "lambda-functions"
 publish = "dist"
 
 [[redirects]]
-  from = "/"
-  to = "/.netlify/functions/app"
+  from = "/blog/*"
+  to = "/.netlify/functions/app/blog/:splat"
+
+[[redirects]]
+from = "/"
+to = "/.netlify/functions/app"
 
 [context.production]
   environment = { NODE_VERSION = "12.16.1" }
