@@ -5,9 +5,9 @@ const PrismicDOM = require('prismic-dom');
 const ejs = require('ejs');
 const blogTemplate = require(`../views/blog-post.ejs`);
 
-const app = express();
+const router = express.Router();
 
-const blogPostRouter = app.get("/blog/:uid", (request, response) => {
+const blogPostRouter = router.get("/", (request, response) => {
 	const uid = request.params.uid;
   
 	// Query the post by its uid

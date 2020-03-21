@@ -18,8 +18,8 @@ router.use(methodOverride());
 router.use(require('./middleware/prismic'));
 
 // Routes
-router.use(require('./routes/index'));
-router.use(require('./routes/blog-post'));
+app.use('/', require('./routes/index'));
+app.use("/blog/:uid", require('./routes/blog-post'));
 
 app.use('/.netlify/functions/app/', router);
 

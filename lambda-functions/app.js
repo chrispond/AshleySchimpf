@@ -9514,8 +9514,8 @@ router.use(bodyParser.urlencoded({
 router.use(methodOverride());
 router.use(__webpack_require__(145)); // Routes
 
-router.use(__webpack_require__(151));
-router.use(__webpack_require__(155));
+app.use('/', __webpack_require__(151));
+app.use("/blog/:uid", __webpack_require__(155));
 app.use('/.netlify/functions/app/', router);
 module.exports.handler = serverless(app);
 
@@ -23736,8 +23736,8 @@ const ejs = __webpack_require__(61);
 
 const indexTemplate = __webpack_require__(154);
 
-const app = express();
-const homeRouter = app.get('/', (request, response) => {
+const router = express.Router();
+const homeRouter = router.get('/', (request, response) => {
   request.prismic.api.getByUID('homepage', 'home').then(homeResponse => {
     request.prismic.api.query(Prismic.Predicates.at("document.type", "blog_post")).then(blogResponse => {
       response.send(ejs.render(indexTemplate.default, {
@@ -23953,8 +23953,8 @@ const ejs = __webpack_require__(61);
 
 const blogTemplate = __webpack_require__(156);
 
-const app = express();
-const blogPostRouter = app.get("/blog/:uid", (request, response) => {
+const router = express.Router();
+const blogPostRouter = router.get("/", (request, response) => {
   const uid = request.params.uid; // Query the post by its uid
 
   request.prismic.api.getByUID("blog_post", uid).then(blogPost => {
