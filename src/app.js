@@ -25,6 +25,6 @@ router.get('/', (request, response) => {
     response.json({"test": "test"});
 });
 
-app.use('/.netlify/functions/app/', router);
+app.use(`${__dirname}/app/`, router);
 
 module.exports.handler = serverless(app);
