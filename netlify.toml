@@ -3,7 +3,7 @@ functions = "lambda-functions"
 publish = "dist"
 
 [[redirects]]
-  from = "/"
+  from = "/*"
   to = "/.netlify/functions/app/"
   status = 200
 
