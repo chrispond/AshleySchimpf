@@ -6,7 +6,6 @@ publish = "dist"
   from = "/"
   to = "/.netlify/functions/app/"
   status = 200
-  force = true
 
 [context.production]
   environment = { NODE_VERSION = "12.16.1" }
