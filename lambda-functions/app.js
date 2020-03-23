@@ -8560,8 +8560,8 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride());
 app.use(__webpack_require__(145)); // Routes
 
-router.use('/', __webpack_require__(151));
-router.use('/blog/', __webpack_require__(154));
+router.use(__webpack_require__(151)); // router.use('/blog/', require('./routes/blog-post'));
+
 app.use('/', router);
 module.exports.handler = serverless(app);
 
@@ -23928,53 +23928,6 @@ exports.cache = {
 /***/ (function(module) {
 
 module.exports = JSON.parse("{\"_args\":[[\"ejs@3.0.1\",\"/Users/chrispond/AshleySchimpf\"]],\"_from\":\"ejs@3.0.1\",\"_id\":\"ejs@3.0.1\",\"_inBundle\":false,\"_integrity\":\"sha512-cuIMtJwxvzumSAkqaaoGY/L6Fc/t6YvoP9/VIaK0V/CyqKLEQ8sqODmYfy/cjXEdZ9+OOL8TecbJu+1RsofGDw==\",\"_location\":\"/ejs\",\"_phantomChildren\":{},\"_requested\":{\"type\":\"version\",\"registry\":true,\"raw\":\"ejs@3.0.1\",\"name\":\"ejs\",\"escapedName\":\"ejs\",\"rawSpec\":\"3.0.1\",\"saveSpec\":null,\"fetchSpec\":\"3.0.1\"},\"_requiredBy\":[\"/\"],\"_resolved\":\"https://registry.npmjs.org/ejs/-/ejs-3.0.1.tgz\",\"_spec\":\"3.0.1\",\"_where\":\"/Users/chrispond/AshleySchimpf\",\"author\":{\"name\":\"Matthew Eernisse\",\"email\":\"mde@fleegix.org\",\"url\":\"http://fleegix.org\"},\"bugs\":{\"url\":\"https://github.com/mde/ejs/issues\"},\"dependencies\":{},\"description\":\"Embedded JavaScript templates\",\"devDependencies\":{\"browserify\":\"^13.1.1\",\"eslint\":\"^4.14.0\",\"git-directory-deploy\":\"^1.5.1\",\"jake\":\"^10.3.1\",\"jsdoc\":\"^3.4.0\",\"lru-cache\":\"^4.0.1\",\"mocha\":\"^5.0.5\",\"uglify-js\":\"^3.3.16\"},\"engines\":{\"node\":\">=0.10.0\"},\"homepage\":\"https://github.com/mde/ejs\",\"keywords\":[\"template\",\"engine\",\"ejs\"],\"license\":\"Apache-2.0\",\"main\":\"./lib/ejs.js\",\"name\":\"ejs\",\"repository\":{\"type\":\"git\",\"url\":\"git://github.com/mde/ejs.git\"},\"scripts\":{\"postinstall\":\"node ./postinstall.js\",\"test\":\"mocha\"},\"version\":\"3.0.1\"}");
-
-/***/ }),
-/* 154 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Dependancies
-const express = __webpack_require__(96);
-
-const Prismic = __webpack_require__(142);
-
-const PrismicDOM = __webpack_require__(143);
-
-const ejs = __webpack_require__(144);
-
-const blogTemplate = __webpack_require__(155);
-
-const router = express.Router();
-const blogPostRouter = router.get("/:uid", (request, response) => {
-  const uid = request.params.uid; // Query the post by its uid
-
-  request.prismic.api.getByUID("blog_post", uid).then(blogPost => {
-    request.prismic.api.query(Prismic.Predicates.any("document.type", ["homepage", "blog_post"])).then(prismicResponse => {
-      const blogPostsData = prismicResponse.results.filter(item => item.type === 'blog_post');
-      const globalData = prismicResponse.results.filter(item => item.type === 'homepage');
-
-      if (blogPost) {
-        response.send(ejs.render(blogTemplate.default, {
-          blogPosts: blogPostsData,
-          blogPost,
-          global: globalData[0].data,
-          PrismicDOM: PrismicDOM
-        }));
-      } else {
-        request.status(404).render("404");
-      }
-    });
-  });
-});
-module.exports = blogPostRouter;
-
-/***/ }),
-/* 155 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\" />\n    <title><%- PrismicDOM.RichText.asText(blogPost.data.blog_title_long)%> | <%= global.tag_line%></title>\n    <link rel=\"canonical\" href=\"TODO\"/>\n    <meta name=\"description\" content=\"<%= blogPost.data.blog_title_short %>\">\n    <meta name=\"author\" content=\"\">\n    <meta property=\"og:site_name\" content=\"TODO\"/>\n    <meta property=\"og:type\" content=\"article\"/>\n    <meta property=\"og:title\" content=\"TODO\"/>\n    <meta property=\"og:description\" content=\"TODO\"/>\n    <meta property=\"og:locale\" content=\"en_CA\"/>\n    <meta name=\"twitter:title\" content=\"TODO\"/>\n    <meta name=\"twitter:description\" content=\"TODO\"/>\n    <meta property=\"og:url\" content=\"TODO\"/>\n    <meta property=\"og:image\" content=\"TODO\"/>\n    <meta name=\"twitter:site\" content=\"TODO @Apple\"/>\n    <meta name=\"twitter:image\" content=\"TODO\"/>\n    <link href=\"https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i|Roboto:700&display=swap\" rel=\"stylesheet\" />\n  </head>\n\n  <body>\n    <div id=\"page-wrapper\">\n      <header class=\"page-header\">\n          <% \n            const isGuestAuthor = blogPost.data.author_name;\n          %>\n          <a class=\"page-header-link\" href=\"/\">Home</a>\n          <div class=\"page-header-content\">\n            \n            <% if (isGuestAuthor && blogPost.data.author_profile_picture.url) { %>\n              <img src=\"<%= blogPost.data.author_profile_picture.url%>\" alt=\"<%= blogPost.data.author_profile_picture.alt %>\" width=\"85\" height=\"85\" />\n            <% } else if (!isGuestAuthor && global.profile_pic.url){ %>\n              <img src=\"<%= global.profile_pic.url%>\" alt=\"<%= global.profile_pic.alt %>\" width=\"85\" height=\"85\" />\n            <% } %>\n            \n            <p class=\"font-green tag-line\">Live <span class=\"font-brown\">Life</span> <span class=\"font-yellow\">Honestly</span></p>\n            \n            <% if (isGuestAuthor || !isGuestAuthor && global.name) { %>\n              <h2 class=\"author\">\n                <%= blogPost.data.author_name || global.name %>\n                <% if (isGuestAuthor && blogPost.data.author_title || !isGuestAuthor && global.job_title) { %>\n                  <br /> <span class=\"font-brown\"><%= blogPost.data.author_title || global.job_title %></span>\n                <% } %>\n              </h2>\n            <% } %>\n          </div>\n        </header>\n        <main role=\"main\">\n            <section class=\"bg-white\">\n                <h1><%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long) %></h1>\n\n                <div>\n                  <% blogPost.data.body.forEach(function(slice){ %>\n                    <% if (slice.slice_type == \"text\") { %>\n                      <%- PrismicDOM.RichText.asHtml(slice.primary.text) %>\n                    <% } %> \n                    \n                    <% if (slice.slice_type == \"list\") { %>\n                      <%- PrismicDOM.RichText.asHtml(slice.primary.list) %>\n                    <% } %>\n          \n                    <% if (slice.slice_type == \"heading\") { %>\n                      <%- PrismicDOM.RichText.asHtml(slice.primary.heading) %>\n                    <% } %>\n          \n                    <% if (slice.slice_type == \"image\") { %>\n                      <img \n                        alt=\"<%- slice.primary.image.alt %>\" \n                        height=\"<%- slice.primary.image.dimensions.height %>\" \n                        src=\"<%- slice.primary.image.url %>\" \n                        width=\"<%- slice.primary.image.dimensions.width %>\" />\n                    <% } %>\n          \n                    <% if (slice.slice_type == \"quote\") { %>\n                      <blockquote class=\"pull-quote\">\n                          <%- PrismicDOM.RichText.asText(slice.primary.quote) %>\n                        <cite>- <%- PrismicDOM.RichText.asText(slice.primary.name_of_the_author) %></cite>\n                      </blockquote>\n                    <% } %>\n                  <% }) %>\n                </div>\n          \n                <h3><%- PrismicDOM.RichText.asText(global.blog_feed_title) %></h3>\n                <ul>\n                  <% \n                  const getStringMonth = month => { \n                    const monthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];\n                    return monthLabel[month]; \n                  }; \n                  \n                  const getStringDay = day => {\n                    return (day + (day > 0 ?\n                    ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10 > 3 ? 0 : \n                    day % 10] : ''))\n                  }; %> \n                  \n                  <%\n                    blogPosts.forEach(post => { \n                      const date = PrismicDOM.Date(post.data.post_date); \n                      const wordCount = post.data.body.reduce((accumulator, currentValue) => {\n                        const content = PrismicDOM.RichText.asText(currentValue.primary[currentValue.slice_type]);\n                        return accumulator + content.split(\" \").length;\n                      }, 0);\n          \n                      // Read time based off average 200 words per minute\n                      const readTime = Math.ceil(wordCount / 200); \n          \n                      if(blogPost.uid === post.uid){\n                        return\n                      }\n                  %>\n                  <li>\n                    <a href=\"<%= post.uid %>\">\n                      <h3><%= post.data.blog_title_short %></h3>\n                    </a>\n                    <p>\n                      <%= getStringMonth(date.getMonth()); %> <%=\n                      getStringDay(date.getDate()); %>, <%= date.getFullYear(); %> | ~<%=\n                      readTime %> min read\n                    </p>\n                  </li>\n                  <% }); %>\n                </ul>\n          \n                <h3><%- PrismicDOM.RichText.asText(global.contact_title) %></h3>\n                <ul class=\"connect\">\n                  <% global.social_media_accounts.forEach(function(account){ %>\n                    <li>\n                      <a href=\"<%= account.url %>\" target=\"_blank\">\n                        <img src=\"<%= account.social_icon.url %>\" with=\"85\" height=\"85\" alt=\"<%= account.social_icon.alt %>\" />\n                      </a>\n                    </li>\n                  <% }); %>\n                </ul>\n              </div>\n            </section>\n        </main>\n    <script type=\"application/ld+json\">\n      {\n        \"@context\": \"http://schema.org\",\n        \"@type\": \"Blog\",\n        \"mainEntityOfPage\": \"https://www.site.com/articleurl/\",\n        \"headline\": \"<%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long)%>\",\n        \"datePublished\": \"<%= blogPost.data.post_date || blogPost.first_publication_date %>,\",\n        \"dateModified\": \"<%= blogPost.last_publication_date %>,\",\n        \"author\": {\n          <% if (isGuestAuthor) { %>\n            \"name\": \"<%= blogPost.data.author_name %>\",\n            \"jobTitle\": \"<%= blogPost.data.author_title %>\"\n          <% } else { %>\n            \"@id\":\"https://www.site.com/\"\n          <% } %>\n        },\n        <% if (isGuestAuthor) { %>\n        \"publisher\": { \"@id\":\"https://www.site.com/\" },\n        <% } %>\n        \"description\": \"\"\n      }\n    </script>\n  </body>\n</html>\n");
 
 /***/ })
 /******/ ])));
