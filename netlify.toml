@@ -3,10 +3,9 @@ functions = "lambda-functions"
 publish = "dist"
 
 [[redirects]]
-  from = "/"
+  from = "/app/"
   to = "/.netlify/functions/app/"
   status = 200
-  force = true
 
 [context.production]
   environment = { NODE_VERSION = "12.16.1" }
