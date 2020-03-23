@@ -8565,7 +8565,7 @@ router.get('/', (request, response) => {
     "test": "test"
   });
 });
-app.use(`${__dirname}/app/`, router);
+app.use('/.netlify/functions/app/', router);
 module.exports.handler = serverless(app);
 
 /***/ }),
