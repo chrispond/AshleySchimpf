@@ -9,13 +9,13 @@ const app = express();
 const router = express.Router();
 
 // Template Settings
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(methodOverride());
-app.use(require('./middleware/prismic'));
+// // Middleware
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(methodOverride());
+// app.use(require('./middleware/prismic'));
 
 // Routes
 // router.use(require('./routes/index'));
