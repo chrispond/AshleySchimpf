@@ -19,7 +19,7 @@ app.use(require('./middleware/prismic'));
 
 // Routes
 router.use(require('./routes/index'));
-// router.use('/blog/', require('./routes/blog-post'));
+router.use('/blog/', require('./routes/blog-post'));
 
 app.use('/', router);
 
