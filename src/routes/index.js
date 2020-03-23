@@ -12,17 +12,16 @@ homeRouter.get('/', (request, response) => {
 		request.prismic.api
 		.query(Prismic.Predicates.at("document.type", "blog_post"))
 		.then(blogResponse => {
-			// response.send(
-			// 	ejs.render(
-			// 		indexTemplate.default, 
-			// 		{
-			// 			global: homeResponse.data, 
-			// 			blogPosts: blogResponse.results,
-			// 			PrismicDOM: PrismicDOM
-			// 		}
-			// 	)
-			// );
-			response.json({"test": "test"});
+			response.send(
+				ejs.render(
+					indexTemplate.default, 
+					{
+						global: homeResponse.data, 
+						blogPosts: blogResponse.results,
+						PrismicDOM: PrismicDOM
+					}
+				)
+			);
 		})
 	});
 });
