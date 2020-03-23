@@ -3,7 +3,7 @@ const express = require('express');
 const Prismic = require('prismic-javascript');
 const PrismicDOM = require('prismic-dom');
 const ejs = require('ejs');
-// const indexTemplate = require(`../views/index.ejs`);
+const indexTemplate = require(`../views/index.ejs`);
 
 const homeRouter = express.Router();
 
