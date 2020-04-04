@@ -16,9 +16,10 @@ homeRouter.get('/', (request, response) => {
 				ejs.render(
 					indexTemplate.default, 
 					{
-						global: homeResponse.data, 
 						blogPosts: blogResponse.results,
-						PrismicDOM: PrismicDOM
+						global: homeResponse.data,
+						PrismicDOM: PrismicDOM,
+						rootPath: request.app.locals.rootPath
 					}
 				)
 			);

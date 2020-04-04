@@ -24,10 +24,11 @@ const blogPostRouter = router.get("/:uid", (request, response) => {
 						ejs.render(
 							blogTemplate.default, 
 							{
-								blogPosts: blogPostsData,
 								blogPost,
+								blogPosts: blogPostsData,
 								global: globalData[0].data,
-								PrismicDOM: PrismicDOM
+								PrismicDOM: PrismicDOM,
+								rootPath: request.app.locals.rootPath
 							})
 					);
 				} else {

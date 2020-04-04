@@ -19,6 +19,7 @@
     <meta name="twitter:site" content="TODO @Apple"/>
     <meta name="twitter:image" content="TODO"/>
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i|Roboto:700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="<%= rootPath %>public/styles/global.css" />
   </head>
 
   <body>
@@ -27,7 +28,7 @@
           <% 
             const isGuestAuthor = blogPost.data.author_name;
           %>
-          <a class="page-header-link" href="/">Home</a>
+          <a class="page-header-link" href="<%= rootPath %>">Home</a>
           <div class="page-header-content">
             
             <% if (isGuestAuthor && blogPost.data.author_profile_picture.url) { %>
@@ -160,5 +161,6 @@
         "description": ""
       }
     </script>
+    <script src="<%= rootPath %>public/scripts/global.js"></script>
   </body>
 </html>

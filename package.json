@@ -13,8 +13,8 @@
     "node": ">=12.16.1"
   },
   "scripts": {
-    "build": "netlify-lambda build --config ./webpack.functions.js src",
-    "start": "netlify-lambda serve --config ./webpack.functions.js src"
+    "build": "cross-env NODE_ENV=prod netlify-lambda build --config ./webpack.functions.js src",
+    "start": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -27,5 +27,8 @@
     "prismic-javascript": "^2.2.0",
     "raw-loader": "^4.0.0",
     "serverless-http": "^2.3.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
   }
 }
