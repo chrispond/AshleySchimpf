@@ -3,27 +3,21 @@
 -----*/
 
 //Default hidden state
-.cp-trim-paragraph{
-  .cp-trim-paragraph-ellipsis:before{
-    content:'...';
+.cp-trim-paragraph {
+  .cp-trim-paragraph-ellipsis:before {
+    content: "...";
   }
-  .cp-trim-paragraph-extra{
-    display:none;
-  }
-
-  //Read More Link
-  .cp-trim-paragraph-read-more{
-    margin-left:1rem;
-    display:inline-block;
+  .cp-trim-paragraph-extra {
+    display: none;
   }
 }
 
 //Show State
-.cp-trim-paragraph.show{
-  .cp-trim-paragraph-ellipsis{
-    display:none;
+.cp-trim-paragraph.show {
+  .cp-trim-paragraph-ellipsis {
+    display: none;
   }
-  .cp-trim-paragraph-extra{
-    display:inline;
+  .cp-trim-paragraph-extra {
+    display: inline;
   }
 }

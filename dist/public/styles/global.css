@@ -207,7 +207,7 @@ body {
   margin-bottom: 0;
 }
 .page-header:before {
-  content: '';
+  content: "";
   width: 100%;
   height: 100%;
   display: block;
@@ -226,7 +226,7 @@ body {
   right: 1.5rem;
 }
 .page-header-link:before {
-  content: '';
+  content: "";
   width: 0.5rem;
   height: 0.5rem;
   display: block;
@@ -243,7 +243,7 @@ body {
   margin-bottom: 1.5rem;
   padding: 0.2rem;
   display: inline-block;
-  background: #FFF;
+  background: #fff;
   border: solid 0.2rem #F1C100;
   border-radius: 50%;
 }
@@ -262,9 +262,9 @@ body {
   }
 }
 .page-header .tag-line {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
   font-family: "Playfair Display", serif;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 2.1rem;
   font-style: italic;
   text-transform: capitalize;
@@ -285,6 +285,7 @@ body {
   font-family: "Roboto", sans-serif;
   font-size: 1.6rem;
   text-transform: none;
+  line-height: 2rem;
   color: #000;
 }
 .page-header-center {
@@ -499,14 +500,10 @@ body {
   MOBILE/SHARED STYLES FIRST
 -----*/
 .cp-trim-paragraph .cp-trim-paragraph-ellipsis:before {
-  content: '...';
+  content: "...";
 }
 .cp-trim-paragraph .cp-trim-paragraph-extra {
   display: none;
-}
-.cp-trim-paragraph .cp-trim-paragraph-read-more {
-  margin-left: 1rem;
-  display: inline-block;
 }
 
 .cp-trim-paragraph.show .cp-trim-paragraph-ellipsis {

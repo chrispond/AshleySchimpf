@@ -1,7 +1,7 @@
 // Custom errors for this component
 export const errors = {
-  elementRequired: 'CpTrimParagraph requires element paramter to be defined',
-  elementObject: 'CpTrimParagraph requires element be an object'
+  elementRequired: "CpTrimParagraph requires element paramter to be defined",
+  elementObject: "CpTrimParagraph requires element be an object",
 };
 
 /**
@@ -17,13 +17,14 @@ export class CpTrimParagraph {
     // Validate 'element' exists and is an object; otherwise error
     if (!element) {
       throw new Error(errors.elementRequired);
-    } else if (typeof element !== 'object') {
+    } else if (typeof element !== "object") {
       throw new Error(errors.elementObject);
     }
 
     //Param
     this.element = element;
-    this.textLimit = this.textLimit = typeof textLimit !== 'number' ? 270 : textLimit;
+    this.textLimit = this.textLimit =
+      typeof textLimit !== "number" ? 270 : textLimit;
 
     //DOM Elements
     this.readMoreLink = this._buildReadMore();
@@ -47,7 +48,7 @@ export class CpTrimParagraph {
    */
   _addEvents() {
     //Click handler for read more link
-    this.readMoreLink.addEventListener('click', this._toggleTextBound);
+    this.readMoreLink.addEventListener("click", this._toggleTextBound);
   }
 
   /**
@@ -58,11 +59,11 @@ export class CpTrimParagraph {
    * @private
    */
   _buildReadMore() {
-    const link = document.createElement('a');
-    link.setAttribute('href', '#');
-    link.setAttribute('data-gtm-event-cta', 'read-more');
-    link.classList.add('cp-trim-paragraph-read-more');
-    link.innerText = 'Read more';
+    const link = document.createElement("a");
+    link.setAttribute("href", "#");
+    link.setAttribute("data-gtm-event-cta", "read-more");
+    link.classList.add("cp-trim-paragraph-read-more");
+    link.innerText = "Read more";
     return link;
   }
 
@@ -88,7 +89,7 @@ export class CpTrimParagraph {
    */
   _removeEvents() {
     //Click handler for read more link
-    this.readMoreLink.removeEventListener('click', this._toggleTextBound);
+    this.readMoreLink.removeEventListener("click", this._toggleTextBound);
   }
 
   /**
@@ -101,12 +102,12 @@ export class CpTrimParagraph {
   _toggleText(event) {
     event.preventDefault();
 
-    if (this.element.classList.contains('show')) {
-      this.element.classList.remove('show');
-      this.readMoreLink.innerText = 'Read more';
+    if (this.element.classList.contains("show")) {
+      this.element.classList.remove("show");
+      this.readMoreLink.innerText = "Read more";
     } else {
-      this.element.classList.add('show');
-      this.readMoreLink.innerText = 'Hide text';
+      this.element.classList.add("show");
+      this.readMoreLink.innerText = "Hide text";
     }
   }
 
@@ -124,10 +125,15 @@ export class CpTrimParagraph {
     const limitText = this.originalText.substr(0, this.textLimit);
 
     //Adjust trimmed text by making sure we don't cut the middle of a word
-    const trimText = this.originalText.substr(Math.min(limitText.length, limitText.lastIndexOf(' ')));
+    const trimText = this.originalText.substr(
+      Math.min(limitText.length, limitText.lastIndexOf(" "))
+    );
 
     //Create new paragraph and wrap trimmed text in a span element so we can hide it
-    const newParagraph = this.originalText.replace(trimText, `<span class="cp-trim-paragraph-ellipsis"></span><span class="cp-trim-paragraph-extra">${trimText}</span> `);
+    const newParagraph = this.originalText.replace(
+      trimText,
+      `<span class="cp-trim-paragraph-ellipsis"></span><span class="cp-trim-paragraph-extra">${trimText}</span><br /> `
+    );
 
     //Only the paragraph if it exceeds the text limit
     if (originalTextLength > this.textLimit) {
