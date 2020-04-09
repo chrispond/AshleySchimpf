@@ -30,11 +30,11 @@
           %>
           <a class="page-header-link" href="<%= rootPath %>">Home</a>
           <div class="page-header-content">
-            
+
             <% if (isGuestAuthor && blogPost.data.author_profile_picture.url) { %>
-              <img src="<%= blogPost.data.author_profile_picture.url%>" alt="<%= blogPost.data.author_profile_picture.alt %>" width="85" height="85" />
+              <img class="profile-picture" src="<%= blogPost.data.author_profile_picture.url%>" alt="<%= blogPost.data.author_profile_picture.alt %>" width="85" height="85" />
             <% } else if (!isGuestAuthor && global.profile_pic.url){ %>
-              <img src="<%= global.profile_pic.url%>" alt="<%= global.profile_pic.alt %>" width="85" height="85" />
+              <img class="profile-picture" src="<%= global.profile_pic.url%>" alt="<%= global.profile_pic.alt %>" width="85" height="85" />
             <% } %>
             
             <p class="font-green tag-line">Live <span class="font-brown">Life</span> <span class="font-yellow">Honestly</span></p>
@@ -51,7 +51,10 @@
         </header>
         <main role="main">
             <section class="bg-white">
-                <h1><%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long) %></h1>
+                <p class="time-stamp text-center">
+                  <%= utils.prettyDate(blogPost.data.post_date) %> | ~<%= utils.readTime(blogPost.data.body) %> min read
+                </p>
+                <h1 class="text-center"><%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long) %></h1>
 
                 <div>
                   <% blogPost.data.body.forEach(function(slice){ %>
@@ -83,50 +86,40 @@
                     <% } %>
                   <% }) %>
                 </div>
+
+                <aside aria-labelledby="carouselheading">
+                  <h2 id="carouselheading"><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
+                  <div class="cp-carousel full-width-small">
+                      <div class="cp-carousel-wrapper">
+                        <ul class="cp-carousel-slider">                            
+                            <%
+                              blogPosts.forEach(post => { 
+                                if(blogPost.uid === post.uid){
+                                  return
+                                }
+                            %>
+                          <li class="cp-carousel-slider-slide">
+                            <article>
+                              <a href="<%= post.uid %>">
+                                <h3><%= post.data.blog_title_short %></h3>
+                                <p><%= post.data.blurb %></p>
+                              </a>
+                              <p class="time-stamp">
+                                <%= utils.prettyDate(post.data.post_date) %> | ~<%= utils.readTime(post.data.body) %> min read
+                              </p>
+                            </article>
+                          </li>
+                          <% }); %>
+                        </ul>
+                      </div>
+
+                      <button aria-label="Previous Article" class="cp-carousel-prev">Previous Article</button>
+                      <button aria-label="Next Article" class="cp-carousel-next">Next Article</button>
+                      <div aria-live="polite" class="a11y"></div>
+                    </div>
+                </aside>
           
-                <h3><%- PrismicDOM.RichText.asText(global.blog_feed_title) %></h3>
-                <ul>
-                  <% 
-                  const getStringMonth = month => { 
-                    const monthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return monthLabel[month]; 
-                  }; 
-                  
-                  const getStringDay = day => {
-                    return (day + (day > 0 ?
-                    ['th', 'st', 'nd', 'rd'][(day > 3 && day < 21) || day % 10 > 3 ? 0 : 
-                    day % 10] : ''))
-                  }; %> 
-                  
-                  <%
-                    blogPosts.forEach(post => { 
-                      const date = PrismicDOM.Date(post.data.post_date); 
-                      const wordCount = post.data.body.reduce((accumulator, currentValue) => {
-                        const content = PrismicDOM.RichText.asText(currentValue.primary[currentValue.slice_type]);
-                        return accumulator + content.split(" ").length;
-                      }, 0);
-          
-                      // Read time based off average 200 words per minute
-                      const readTime = Math.ceil(wordCount / 200); 
-          
-                      if(blogPost.uid === post.uid){
-                        return
-                      }
-                  %>
-                  <li>
-                    <a href="<%= post.uid %>">
-                      <h3><%= post.data.blog_title_short %></h3>
-                    </a>
-                    <p>
-                      <%= getStringMonth(date.getMonth()); %> <%=
-                      getStringDay(date.getDate()); %>, <%= date.getFullYear(); %> | ~<%=
-                      readTime %> min read
-                    </p>
-                  </li>
-                  <% }); %>
-                </ul>
-          
-                <h3><%- PrismicDOM.RichText.asText(global.contact_title) %></h3>
+                <h2><%- PrismicDOM.RichText.asText(global.contact_title) %></h2>
                 <ul class="connect">
                   <% global.social_media_accounts.forEach(function(account){ %>
                     <li>

@@ -73,13 +73,10 @@ ol {
 }
 
 /*- BLOCK: Paragraphs -*/
-p, ul {
-  margin-bottom: calc(4.5rem - 0.7rem);
-  line-height: 2.8rem;
-}
-
-p + p, p + ul, ul + p, ul + ul {
+p,
+ul {
   margin-bottom: calc(3rem - 0.7rem);
+  line-height: 2.8rem;
 }
 
 /*- BLOCK: SECTION -*/
@@ -106,7 +103,7 @@ ul {
   padding-left: 2rem;
 }
 ul li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 ul li:last-child {
   margin-bottom: 0;
@@ -147,6 +144,7 @@ h1 {
 }
 
 h2 {
+  margin-top: 4.5rem;
   margin-bottom: calc(3rem - 1.2rem);
   font-family: "Roboto", sans-serif;
   font-size: 1.8rem;
@@ -185,22 +183,22 @@ body {
 /* Component Styles */
 .page-header {
   min-height: calc(12rem + 6rem);
-  margin-bottom: 4.5rem;
-  padding: 3rem 3rem 0 3rem;
+  padding: 3rem 6.25%;
   position: relative;
   overflow: hidden;
-  text-align: left;
+  text-align: center;
   border-top: solid 0.4rem #F1C100;
 }
 @media (min-width: 641px) {
   .page-header {
     min-height: calc(12rem + 9rem);
-    padding: 4.5rem;
+    padding: 4.5rem 10.45%;
   }
 }
 @media (min-width: 1281px) {
   .page-header {
     min-height: 15rem;
+    padding: 4.5rem 9.77%;
   }
 }
 .page-header > *:last-child {
@@ -219,11 +217,25 @@ body {
   background: #6C8E78;
   opacity: 0.2;
 }
+@media (min-width: 641px) {
+  .page-header.horizontal {
+    display: flex;
+    justify-content: center;
+    text-align: left;
+  }
+  .page-header.horizontal > * {
+    margin: 0 3rem 0 0;
+  }
+  .page-header.horizontal > *:last-child {
+    margin-right: 0;
+  }
+}
 .page-header-link {
-  line-height: 100%;
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
+  font-family: "Roboto", sans-serif;
+  line-height: 100%;
 }
 .page-header-link:before {
   content: "";
@@ -237,7 +249,10 @@ body {
   border-right: solid 1px #6C8E78;
   transform: rotate(225deg) translate(50%, 50%);
 }
-.page-header img {
+.page-header-content > *:last-child {
+  margin-bottom: 0;
+}
+.page-header .profile-picture {
   width: 9rem;
   height: 9rem;
   margin-bottom: 1.5rem;
@@ -248,7 +263,7 @@ body {
   border-radius: 50%;
 }
 @media (min-width: 641px) {
-  .page-header img {
+  .page-header .profile-picture {
     width: 12rem;
     height: 12rem;
     padding: 0.3rem;
@@ -256,7 +271,7 @@ body {
   }
 }
 @media (min-width: 1281px) {
-  .page-header img {
+  .page-header .profile-picture {
     width: 15rem;
     height: 15rem;
   }
@@ -268,6 +283,7 @@ body {
   font-size: 2.1rem;
   font-style: italic;
   text-transform: capitalize;
+  line-height: 100%;
   white-space: nowrap;
 }
 @media (min-width: 641px) {
@@ -281,33 +297,18 @@ body {
   }
 }
 .page-header .author {
-  margin-bottom: 0;
+  margin: 0 0 1.8rem 0;
   font-family: "Roboto", sans-serif;
   font-size: 1.6rem;
   text-transform: none;
   line-height: 2rem;
-  color: #000;
-}
-.page-header-center {
-  margin-bottom: 3rem;
-  display: inline-block;
-  text-align: center;
-}
-.page-header-center.horizontal {
-  display: flex;
-  justify-content: center;
-}
-.page-header-center.horizontal > * {
-  margin: 0 3rem 0 0;
-  align-self: center;
-}
-.page-header-center.horizontal > *:last-child {
-  margin-right: 0;
+  color: #2C2B25;
 }
 .page-header-about {
   max-width: 60rem;
-  margin: 0 auto;
+  margin: 0 auto 3rem 0;
   font-size: 1.6rem;
+  text-align: left;
   line-height: 2.4rem;
 }
 @media (min-width: 641px) {
@@ -375,7 +376,7 @@ body {
   outline: 0;
 }
 .cp-carousel-slider-slide:focus:before {
-  content: '';
+  content: "";
   width: 100%;
   height: 100%;
   display: block;
@@ -385,7 +386,7 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 .cp-carousel-slider-slide:after {
-  content: '';
+  content: "";
   width: 1px;
   height: 500%;
   display: block;
@@ -393,7 +394,7 @@ body {
   z-index: 1;
   top: 0;
   right: 0;
-  background: #FFF;
+  background: #fff;
   opacity: 0.75;
 }
 .cp-carousel-slider-slide:last-child:after {
@@ -408,7 +409,7 @@ body {
   overflow: hidden;
   text-indent: -999px;
   background: #696C5E;
-  border: solid 0.2rem #FFF;
+  border: solid 0.2rem #fff;
   border-radius: 50%;
   transform: translateY(50%);
   cursor: pointer;
@@ -417,19 +418,19 @@ body {
   background: #F1C100;
 }
 .cp-carousel-next:before, .cp-carousel-prev:before {
-  content: '';
+  content: "";
   width: 33%;
   height: 33%;
   display: block;
   position: absolute;
   bottom: 50%;
   right: 58%;
-  border-top: solid 0.2rem #FFF;
-  border-right: solid 0.2rem #FFF;
+  border-top: solid 0.2rem #fff;
+  border-right: solid 0.2rem #fff;
   transform: translate(50%, 50%) rotate(45deg);
 }
 .cp-carousel-prev {
-  right: calc(1.5rem + 0.5rem + 3rem);
+  right: calc( 1.5rem + 0.5rem + 3rem );
 }
 .cp-carousel-prev:before {
   right: 42%;
@@ -453,7 +454,7 @@ body {
   display: inline-block;
   background: #696C5E;
   border-radius: 50%;
-  border: solid 0.2rem #FFF;
+  border: solid 0.2rem #fff;
 }
 .cp-carousel-nav > *.current {
   background: #F1C100;
@@ -466,10 +467,14 @@ body {
   height: 100%;
   display: block;
 }
+.cp-carousel-slider-slide * {
+  text-decoration: none;
+}
 .cp-carousel h3 {
   margin-bottom: calc(1.5rem - 0.7rem);
   font-family: "Roboto", sans-serif;
   font-size: 1.8rem;
+  text-transform: uppercase;
   line-height: 100%;
   color: #2C2B25;
 }
@@ -477,17 +482,18 @@ body {
   margin-bottom: calc(1.5rem - 0.7rem);
   font-size: 1.4rem;
   line-height: 1.8rem;
+  color: #2C2B25;
 }
 .cp-carousel .time-stamp {
-  font-size: 1.2rem;
-  color: #FFF;
+  font-size: 1.4rem;
+  color: #fff;
   opacity: 0.75;
 }
 
 .connect {
+  margin: 0 0 1.5rem -0.4rem;
   padding: 0;
   list-style: none;
-  text-align: center;
 }
 .connect > * {
   width: 3rem;
@@ -563,7 +569,7 @@ Applies custom styles for an pull quote in a story or article
 */
 .pull-quote {
   padding: 3rem;
-  margin: 0 0 4.5rem;
+  margin: 4.5rem 0;
   font-size: 2.4rem;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
@@ -575,7 +581,7 @@ Applies custom styles for an pull quote in a story or article
   background: #6C8E78;
 }
 .pull-quote:before {
-  content: '\201c';
+  content: "\201c";
   display: block;
   font-size: 4.8rem;
   line-height: 3.5rem;
@@ -585,23 +591,28 @@ Applies custom styles for an pull quote in a story or article
   display: block;
   padding-top: 1.5rem;
   font-size: 1.8rem;
-  line-height: 3.0rem;
+  line-height: 3rem;
   font-family: "Playfair Display", serif;
   font-weight: 100;
   letter-spacing: 0;
-  color: #FFF;
+  color: #fff;
 }
 
 .time-stamp {
+  margin-bottom: 1.9rem;
   font-family: "Roboto", sans-serif;
   font-size: 1.4rem;
   color: #696C5E;
 }
 
-.visuallyhidden {
-  position: absolute;
-  z-index: -1;
-  opacity: 0;
+.a11y {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }
 
 /*-----

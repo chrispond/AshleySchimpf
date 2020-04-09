@@ -2,88 +2,94 @@
 Changes element color to grey
 -*/
 .font-color-grey {
- color: $black;
+  color: $black;
 }
 
-.font-yellow{
-    color: $yellow;
+.font-yellow {
+  color: $yellow;
 }
 
-.font-brown{
-    color: $brown;
+.font-brown {
+  color: $brown;
 }
 
-.font-green{
-    color: $green;
+.font-green {
+  color: $green;
 }
 
 /*- .font-sans-serif
 Changes element font-family to sans serif
 -*/
 .font-sans-serif {
- font-family: $sans-serif-font;
+  font-family: $sans-serif-font;
 }
 
 /*- .font-serif
 Changes element font-family to serif
 -*/
 .font-serif {
- font-family: $serif-font;
+  font-family: $serif-font;
 }
 
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 
 /* .pull-quote
 Applies custom styles for an pull quote in a story or article
 */
 .pull-quote {
- padding: 3rem;
- margin: 0 0 $vertical-gap-large;
- font-size: 2.4rem;
- @include sans-serif-font-bold;
- line-height: 3rem;
- width: 100%;
- text-align: center;
- position: relative;
- background: $green;
+  padding: 3rem;
+  margin: $vertical-gap-large 0;
+  font-size: 2.4rem;
+  @include sans-serif-font-bold;
+  line-height: 3rem;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  background: $green;
 
- &:before {
-  content: '\201c';
-  display: block;
-  font-size: 4.8rem;
-  line-height: 3.5rem;
-  color: $yellow;
- }
+  &:before {
+    content: "\201c";
+    display: block;
+    font-size: 4.8rem;
+    line-height: 3.5rem;
+    color: $yellow;
+  }
 
- cite {
-  display: block;
-  padding-top: $vertical-gap-small;
-  font-size: 1.8rem;
-  line-height: 3.0rem;
-  @include serif-font-regular;
-  color: #FFF;
- }
+  cite {
+    display: block;
+    padding-top: $vertical-gap-small;
+    font-size: 1.8rem;
+    line-height: 3rem;
+    @include serif-font-regular;
+    color: #fff;
+  }
 }
 
 @include min-width-tablet-breakpoint {
- .pull-quote {}
-
+  .pull-quote {
+  }
 }
 
 @include min-width-desktop-breakpoint {
- .pull-quote {}
+  .pull-quote {
+  }
 }
 
-.time-stamp{
-    font-family: $sans-serif-font;
-    font-size: 1.4rem;
-    color: $brown;
+.time-stamp {
+  margin-bottom: 1.9rem;
+  font-family: $sans-serif-font;
+  font-size: 1.4rem;
+  color: $brown;
 }
 
-.visuallyhidden{
-    position:absolute;
-    z-index: -1;;
-    opacity: 0;
+.a11y {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }

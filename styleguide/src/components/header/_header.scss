@@ -1,22 +1,21 @@
 .page-header {
   min-height: calc(12rem + #{$vertical-gap-medium-desktop * 2});
-  margin-bottom: $vertical-gap-large-desktop;
-  padding: $vertical-gap-medium-desktop $vertical-gap-medium-desktop 0
-    $vertical-gap-medium-desktop;
+  padding: $vertical-gap-medium-desktop $section-side-padding;
   position: relative;
   overflow: hidden;
-  text-align: left;
+  text-align: center;
   border-top: solid 0.4rem $yellow;
 
   // Tablet Size
   @include min-width-phone-breakpoint {
     min-height: calc(12rem + #{$vertical-gap-large-desktop * 2});
-    padding: $vertical-gap-large-desktop;
+    padding: $vertical-gap-large-desktop $section-side-padding-tablet;
   }
 
   // Desktop Size
   @include min-width-desktop-breakpoint {
     min-height: 15rem;
+    padding: $vertical-gap-large-desktop $section-side-padding-desktop;
   }
 
   > *:last-child {
@@ -37,11 +36,28 @@
     opacity: 0.2;
   }
 
+  @include min-width-phone-breakpoint {
+    &.horizontal {
+      display: flex;
+      justify-content: center;
+      text-align: left;
+
+      > * {
+        margin: 0 3rem 0 0;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
   &-link {
-    line-height: 100%;
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
+    font-family: $sans-serif-font;
+    line-height: 100%;
 
     &:before {
       content: "";
@@ -57,7 +73,11 @@
     }
   }
 
-  img {
+  &-content > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .profile-picture {
     width: 9rem;
     height: 9rem;
     margin-bottom: $vertical-gap-small-desktop;
@@ -89,6 +109,7 @@
     font-size: 2.1rem;
     font-style: italic;
     text-transform: capitalize;
+    line-height: 100%;
     white-space: nowrap;
 
     // Tablet Size
@@ -101,39 +122,21 @@
       font-size: 2.8rem;
     }
   }
+
   .author {
-    margin-bottom: 0;
+    margin: 0 0 1.8rem 0;
     font-family: $sans-serif-font;
     font-size: 1.6rem;
     text-transform: none;
     line-height: 2rem;
-    color: #000;
-  }
-
-  &-center {
-    margin-bottom: $vertical-gap-medium-desktop;
-    display: inline-block;
-    text-align: center;
-
-    &.horizontal {
-      display: flex;
-      justify-content: center;
-
-      > * {
-        margin: 0 3rem 0 0;
-        align-self: center;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
+    color: $black;
   }
 
   &-about {
     max-width: 60rem;
-    margin: 0 auto;
+    margin: 0 auto $vertical-gap-medium-desktop 0;
     font-size: 1.6rem;
+    text-align: left;
     line-height: 2.4rem;
 
     // Tablet Size
