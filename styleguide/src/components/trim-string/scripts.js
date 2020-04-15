@@ -1,7 +1,7 @@
 // Custom errors for this component
 export const errors = {
   elementRequired: 'CpTrimString requires element paramter to be defined',
-  elementObject: 'CpTrimString requires element be an object'
+  elementObject: 'CpTrimString requires element be an object',
 };
 
 /**
@@ -12,6 +12,7 @@ export const errors = {
  * @example
  * new CpTrimString(document.querySelector('.cp-trim-string'));
  */
+
 export class CpTrimString {
   constructor(element, textLimit) {
     // Validate 'element' exists and is an object; otherwise error
@@ -23,7 +24,8 @@ export class CpTrimString {
 
     //Param
     this.element = element;
-    this.textLimit = this.textLimit = typeof textLimit !== 'number' ? 50 : textLimit;
+    this.textLimit = this.textLimit =
+      typeof textLimit !== 'number' ? 50 : textLimit;
 
     //Properties
     this.originalText = this.element.innerHTML;
@@ -58,7 +60,9 @@ export class CpTrimString {
     const limitText = this.originalText.substr(0, this.textLimit);
 
     //Adjust trimmed text by making sure we don't cut the middle of a word
-    const trimText = this.originalText.substr(Math.min(limitText.length, limitText.lastIndexOf(' ')));
+    const trimText = this.originalText.substr(
+      Math.min(limitText.length, limitText.lastIndexOf(' '))
+    );
 
     //Remove extra text
     const newParagraph = this.originalText.replace(trimText, '');

@@ -19,7 +19,7 @@ window.CpTrimString = CpTrimString;
 //Carousel Initialization
 const cpCarousels = document.querySelectorAll('.cp-carousel');
 const cpCarouselsLength = cpCarousels.length;
-const cpCarouselOptionsHandler = carouselWidth => {
+const cpCarouselOptionsHandler = (carouselWidth) => {
   if (carouselWidth <= 480) {
     return { slidesInView: 1, isInfinit: false };
   } else if (carouselWidth > 480 && carouselWidth <= 960) {
@@ -35,15 +35,18 @@ if (cpCarouselsLength > 0) {
     const itemWidth = item.clientWidth;
     const test = new CpCarousel(item, cpCarouselOptionsHandler(itemWidth));
 
-    const prevSlide = evt => {
+    const prevSlide = (evt) => {
       test.updateOptions({ slidesInView: 1, firstSlideIndex: 1 });
     };
 
-    test.onSlideStart(slideIndex => {
+    test.onSlideStart((slideIndex) => {
       // Do Stuff
+
+      console.log('----- onSlideStart: ', slideIndex);
     });
-    test.onSlideStop(slideIndex => {
+    test.onSlideStop((slideIndex) => {
       // Do Stuff
+      console.log('----- onSlideStop: ', slideIndex);
     });
 
     const prevButton = item.querySelector('.cp-carousel-prev');

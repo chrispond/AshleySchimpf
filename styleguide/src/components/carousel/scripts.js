@@ -17,14 +17,15 @@
 const defaultOptions = {
   isInfinit: false,
   firstSlideIndex: 1,
-  slidesInView: 1
+  slidesInView: 1,
 };
 export class CpCarousel {
   constructor(element, options = defaultOptions) {
     this.options = {
       isInfinit: options.isInfinit || defaultOptions.isInfinit,
-      firstSlideIndex: options.firstSlideIndex || defaultOptions.firstSlideIndex,
-      slidesInView: options.slidesInView || defaultOptions.slidesInView
+      firstSlideIndex:
+        options.firstSlideIndex || defaultOptions.firstSlideIndex,
+      slidesInView: options.slidesInView || defaultOptions.slidesInView,
     };
 
     //DOM Elements
@@ -100,7 +101,11 @@ export class CpCarousel {
     this.slider.removeEventListener('mouseleave', this._onUp, false);
     this.slider.removeEventListener('mouseup', this._onUp, false);
     this.slider.removeEventListener('touchend', this._onUp, false);
-    this.slider.removeEventListener('transitionend', this._onTransitionEnd, false);
+    this.slider.removeEventListener(
+      'transitionend',
+      this._onTransitionEnd,
+      false
+    );
   }
 
   // _addSlideEvents() {
@@ -181,8 +186,10 @@ export class CpCarousel {
   _cloneChildren(numberOfClones) {
     const numberOfSlides = this.slides.length;
 
-    const clonedSlideElement = element => {
-      const clonedElement = document.createElement(element.tagName.toLowerCase());
+    const clonedSlideElement = (element) => {
+      const clonedElement = document.createElement(
+        element.tagName.toLowerCase()
+      );
 
       clonedElement.innerHTML = element.innerHTML;
       clonedElement.className = `${element.className} clone`;
@@ -193,17 +200,24 @@ export class CpCarousel {
     };
 
     // Clone first visible slides and add them to the end of the carousel
-    console.log('CLONES', Object.entries(this.slides).slice(numberOfSlides - numberOfClones, numberOfSlides), Object.entries(this.slides).slice(0, numberOfClones));
+    console.log(
+      'CLONES',
+      Object.entries(this.slides).slice(
+        numberOfSlides - numberOfClones,
+        numberOfSlides
+      ),
+      Object.entries(this.slides).slice(0, numberOfClones)
+    );
     Object.entries(this.slides)
       .slice(numberOfSlides - numberOfClones, numberOfSlides)
-      .forEach(slide => {
+      .forEach((slide) => {
         this.slider.insertBefore(clonedSlideElement(slide[1]), this.slides[0]);
       });
 
     // Clone the last visible slides and add them to the start of the carousel
     Object.entries(this.slides)
       .slice(0, numberOfClones)
-      .forEach(slide => {
+      .forEach((slide) => {
         this.slider.appendChild(clonedSlideElement(slide[1]));
       });
 
@@ -263,10 +277,15 @@ export class CpCarousel {
   }
 
   _updateA11y() {
-    const lastSlideInView = this.currentSlide + Math.floor(this.options.slidesInView) - 1;
+    const lastSlideInView =
+      this.currentSlide + Math.floor(this.options.slidesInView) - 1;
 
     this.slides.forEach((slide, index) => {
-      if (index >= this.currentSlide && index <= lastSlideInView && !slide.classList.contains('clone')) {
+      if (
+        index >= this.currentSlide &&
+        index <= lastSlideInView &&
+        !slide.classList.contains('clone')
+      ) {
         slide.setAttribute('aria-hidden', false);
         slide.setAttribute('tabindex', '0');
       } else {
@@ -321,7 +340,11 @@ export class CpCarousel {
     event.preventDefault();
 
     // Fire callback
-    if (this.mouseDown && this.mousePosition === 0 && typeof this.startCallBack === 'function') {
+    if (
+      this.mouseDown &&
+      this.mousePosition === 0 &&
+      typeof this.startCallBack === 'function'
+    ) {
       this.startCallBack(this.currentSlide);
     }
 
@@ -329,8 +352,11 @@ export class CpCarousel {
     if (this.mouseDown) {
       // Calculate new positions
       const mouseMoveNew = event.clientX || event.touches[0].clientX;
-      const mousePositionNew = this.mousePosition + (mouseMoveNew - this.mouseMove);
-      const position = this._calcDragPos((mousePositionNew / this.wrapperWidth) * 100);
+      const mousePositionNew =
+        this.mousePosition + (mouseMoveNew - this.mouseMove);
+      const position = this._calcDragPos(
+        (mousePositionNew / this.wrapperWidth) * 100
+      );
 
       // Update properties
       this.mousePosition = mousePositionNew;
@@ -352,13 +378,20 @@ export class CpCarousel {
   onNext() {
     console.log('onNext', this);
     // Fire callback
-    if (this.mouseDown && this.mousePosition === 0 && typeof this.startCallBack === 'function') {
+    if (
+      this.mouseDown &&
+      this.mousePosition === 0 &&
+      typeof this.startCallBack === 'function'
+    ) {
       this.startCallBack(this.currentSlide);
     }
 
     this.animateTransition = true;
     const targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
-    const safeSlidePosition = targetSlidePosition < this.maxSliderPosition ? this.maxSliderPosition : targetSlidePosition;
+    const safeSlidePosition =
+      targetSlidePosition < this.maxSliderPosition
+        ? this.maxSliderPosition
+        : targetSlidePosition;
 
     if (this.options.isInfinit || safeSlidePosition >= this.maxSliderPosition) {
       this.currentSlide = this.currentSlide + 1;
@@ -377,7 +410,11 @@ export class CpCarousel {
    **/
   onPrevious() {
     // Fire callback
-    if (this.mouseDown && this.mousePosition === 0 && typeof this.startCallBack === 'function') {
+    if (
+      this.mouseDown &&
+      this.mousePosition === 0 &&
+      typeof this.startCallBack === 'function'
+    ) {
       this.startCallBack(this.currentSlide);
     }
 
@@ -410,7 +447,10 @@ export class CpCarousel {
         const goToPosition = -(lastSlide * this.slideWidth);
         this.currentSlide = this.totalSlides - 2;
         this._updateSliderPosition(goToPosition);
-      } else if (this.carouselPosition - this.slideWidth < this.maxSliderPosition) {
+      } else if (
+        this.carouselPosition - this.slideWidth <
+        this.maxSliderPosition
+      ) {
         const goToPosition = -(this.slideWidth * Math.ceil(this.showSlides));
         this.currentSlide = Math.ceil(this.showSlides);
         this._updateSliderPosition(goToPosition);
@@ -439,15 +479,20 @@ export class CpCarousel {
     if (this.mouseDown) {
       this.swipeNext = this.carouselStartPosition > this.carouselPosition;
 
-      let snapPosition = Math.ceil(this.carouselPosition / this.slideWidth) * this.slideWidth;
+      let snapPosition =
+        Math.ceil(this.carouselPosition / this.slideWidth) * this.slideWidth;
 
       // Send the carousel in the other direction if swiping to the next slide
       if (this.swipeNext) {
-        snapPosition = Math.floor(this.carouselPosition / this.slideWidth) * this.slideWidth;
+        snapPosition =
+          Math.floor(this.carouselPosition / this.slideWidth) * this.slideWidth;
       }
 
       // Override snapPosition if it is headed out of bounds
-      if (this.carouselPosition <= this.maxSliderPosition || snapPosition <= this.maxSliderPosition) {
+      if (
+        this.carouselPosition <= this.maxSliderPosition ||
+        snapPosition <= this.maxSliderPosition
+      ) {
         snapPosition = this.maxSliderPosition;
       } else if (this.carouselPosition > 0) {
         snapPosition = 0;
@@ -489,7 +534,7 @@ export class CpCarousel {
     this.slider.style.width = `calc((${this.totalSlides} / ${this.showSlides}) * 100%)`;
 
     // Set slide widths
-    this.slides.forEach(slide => {
+    this.slides.forEach((slide) => {
       slide.style.width = `calc(100% / ${this.totalSlides})`;
     });
 
@@ -500,7 +545,7 @@ export class CpCarousel {
   _removeStyles() {
     this.slider.removeAttribute('style');
 
-    this.slides.forEach(slide => {
+    this.slides.forEach((slide) => {
       slide.removeAttribute('style');
     });
   }
@@ -517,13 +562,20 @@ export class CpCarousel {
   _setProperties() {
     this.totalSlides = this.slides.length;
     this.options.isInfinit = this.options.isInfinit && this.hasEnoughSlides;
-    this.showSlides = this.options.slidesInView > this.totalSlides ? this.totalSlides : this.options.slidesInView;
-    let safeGoToSlide = this.options.firstSlideIndex < 1 ? 1 : this.options.firstSlideIndex;
+    this.showSlides =
+      this.options.slidesInView > this.totalSlides
+        ? this.totalSlides
+        : this.options.slidesInView;
+    let safeGoToSlide =
+      this.options.firstSlideIndex < 1 ? 1 : this.options.firstSlideIndex;
 
     console.log('*****', safeGoToSlide, this.totalSlides - this.showSlides * 2);
 
     // If carousel isInfinit and 'safeGoToSlide' is greater then total slides (not including clones)
-    if (this.options.isInfinit && safeGoToSlide >= this.totalSlides - this.showSlides * 2) {
+    if (
+      this.options.isInfinit &&
+      safeGoToSlide >= this.totalSlides - this.showSlides * 2
+    ) {
       safeGoToSlide = Math.ceil(this.showSlides);
       console.log('3', safeGoToSlide);
     }
@@ -542,7 +594,10 @@ export class CpCarousel {
     }
 
     // TODO:
-    else if (safeGoToSlide + this.showSlides >= this.totalSlides + this.showSlides) {
+    else if (
+      safeGoToSlide + this.showSlides >=
+      this.totalSlides + this.showSlides
+    ) {
       safeGoToSlide -= this.showSlides;
       console.log('5', safeGoToSlide);
 
@@ -565,7 +620,10 @@ export class CpCarousel {
     this.slideQuotient = this.showSlides / this.totalSlides;
     this.wrapperWidth = this.wrapper.clientWidth;
     this.sliderWidth = this.wrapperWidth * (this.totalSlides / this.showSlides);
-    this.maxSliderPosition = this._calcMaxPos(this.wrapperWidth, this.sliderWidth);
+    this.maxSliderPosition = this._calcMaxPos(
+      this.wrapperWidth,
+      this.sliderWidth
+    );
 
     this._setDimensions();
     this._updateA11y();
@@ -587,24 +645,35 @@ export class CpCarousel {
 
     // Adjust currentSlideIndex if there are cloned slides
     if (this.slider.querySelectorAll('.clone').length) {
-      currentSlideIndex = Math.abs(this.currentSlide - Math.ceil(this.options.slidesInView));
+      currentSlideIndex = Math.abs(
+        this.currentSlide - Math.ceil(this.options.slidesInView)
+      );
     }
 
     // If isInfinit has changed to false
-    if ((newOptions.isInfinit === false && this.options.isInfinit === true) || (this.options.isInfinit === true && !this.hasEnoughSlides)) {
+    if (
+      (newOptions.isInfinit === false && this.options.isInfinit === true) ||
+      (this.options.isInfinit === true && !this.hasEnoughSlides)
+    ) {
       this._removeClonedChildren();
       this.options.firstSlideIndex = currentSlideIndex + 1;
     }
 
     // If 'isInfinit' has change to true OR 'slidesInView' have changed we need to update the cloned children
-    if (this.hasEnoughSlides && ((newOptions.isInfinit && !this.options.isInfinit) || (newOptions.slidesInView && newOptions.isInfinit))) {
+    if (
+      this.hasEnoughSlides &&
+      ((newOptions.isInfinit && !this.options.isInfinit) ||
+        (newOptions.slidesInView && newOptions.isInfinit))
+    ) {
       this._removeClonedChildren();
-      this._cloneChildren(Math.ceil(newOptions.slidesInView || this.options.slidesInView));
+      this._cloneChildren(
+        Math.ceil(newOptions.slidesInView || this.options.slidesInView)
+      );
       this.options.firstSlideIndex = currentSlideIndex + 1;
     }
 
     // Update options
-    Object.keys(newOptions).forEach(option => {
+    Object.keys(newOptions).forEach((option) => {
       this.options[option] = newOptions[option];
     });
 
@@ -627,7 +696,8 @@ export class CpCarousel {
    **/
   _updateSliderPosition(position) {
     // Re-Calculate the position so it can be used for translate
-    const translatePosition = this.maxSliderPosition < 0 ? position * this.slideQuotient : 0;
+    const translatePosition =
+      this.maxSliderPosition < 0 ? position * this.slideQuotient : 0;
 
     // Animate the slider
     if (this.animateTransition) {

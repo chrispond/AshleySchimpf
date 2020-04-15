@@ -3,24 +3,25 @@
 -----*/
 
 body {
- @include serif-font-regular;
- font-size: $font-size-body-mobile;
- color: $black;
- background: #ebebeb;
+  @include serif-font-regular;
+  font-size: $font-size-body-mobile;
+  color: $black;
+  background: #ebebeb;
 }
 
 #page-wrapper {
- width: 100%;
- max-width: $desktop-width;
- margin: 0 auto;
- background-color: #FFF;
+  width: 100%;
+  max-width: $desktop-width;
+  margin: 0 auto;
+  padding-bottom: $vertical-gap-medium;
+  background-color: #fff;
 }
 
 /*-----
   Phone Breakpoint: MIN
 -----*/
 @include min-width-phone-breakpoint {
- body {
-  font-size: $font-size-body-desktop;
- }
+  body {
+    font-size: $font-size-body-desktop;
+  }
 }
