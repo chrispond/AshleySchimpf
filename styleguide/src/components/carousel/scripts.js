@@ -40,14 +40,12 @@ export class CpCarousel {
       this._cloneChildren(Math.ceil(this.options.slidesInView));
     }
 
-    if (!this.hasEnoughSlides) {
-      this._disable();
-    }
-
     //Properties
+    this.carouselDisabled = !this.hasEnoughSlides;
     this.carouselPosition = 0;
     this.carouselStartPosition = this.carouselPosition;
     this.currentSlide = this.options.firstSlideIndex - 1;
+    this.isAnimating = false;
     this.maxSliderPosition = 0;
     this.mouseDown = false;
     this.mouseMove = 0;
@@ -64,13 +62,14 @@ export class CpCarousel {
     this._onClick = this._onClick.bind(this);
     this._onDown = this._onDown.bind(this);
     this._onMove = this._onMove.bind(this);
-    // this._onSlideFocus = this._onSlideFocus.bind(this);
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
     this._onUp = this._onUp.bind(this);
 
     this._setProperties();
-    this._addEvents();
-    // this._addSlideEvents();
+
+    if (!this.carouselDisabled) {
+      this._addEvents();
+    }
   }
 
   /**
@@ -107,18 +106,6 @@ export class CpCarousel {
       false
     );
   }
-
-  // _addSlideEvents() {
-  //   this.slides.forEach(slide => {
-  //     slide.addEventListener('focus', this._onSlideFocus, false);
-  //   });
-  // }
-
-  // _removeSlideEvents() {
-  //   this.slides.forEach(slide => {
-  //     slide.removeEventListener('focus', this._onSlideFocus, false);
-  //   });
-  // }
 
   // _onSlideFocus(event) {
   //   if (!this.mouseDown) {
@@ -200,14 +187,6 @@ export class CpCarousel {
     };
 
     // Clone first visible slides and add them to the end of the carousel
-    console.log(
-      'CLONES',
-      Object.entries(this.slides).slice(
-        numberOfSlides - numberOfClones,
-        numberOfSlides
-      ),
-      Object.entries(this.slides).slice(0, numberOfClones)
-    );
     Object.entries(this.slides)
       .slice(numberOfSlides - numberOfClones, numberOfSlides)
       .forEach((slide) => {
@@ -222,6 +201,32 @@ export class CpCarousel {
       });
 
     this.slides = this.slider.querySelectorAll('.cp-carousel-slider-slide');
+    this.totalSlides = this.slides.length;
+  }
+
+  /**
+   * @name _currentIndexBuffed
+   * @description TODO
+   * @method
+   * @private
+   * @memberof CpCarousel
+   **/
+  _currentIndexBuffed(index) {
+    let buffedIndex = index;
+    const clonedSlidesLength = this.slider.querySelectorAll('.clone').length;
+    const originalSlidesLength = this.totalSlides - clonedSlidesLength;
+
+    if (this.options.isInfinit) {
+      let startIndex = originalSlidesLength - clonedSlidesLength / 2 - 1;
+
+      for (let i = 1; i < index; i++) {
+        startIndex = startIndex === originalSlidesLength ? 1 : startIndex + 1;
+        console.log('***', index, startIndex);
+      }
+
+      buffedIndex = startIndex;
+    }
+    return buffedIndex;
   }
 
   /**
@@ -236,18 +241,55 @@ export class CpCarousel {
    */
   destroy() {
     this._removeEvents();
-    // this._removeSlideEvents();
     this._removeClonedChildren();
-    this._disable();
+    this._disableCarousel();
     this._removeStyles();
   }
 
-  _disable() {
+  /**
+   * @name _disableCarousel
+   * @description TODO
+   * @method
+   * @private
+   * @memberof CpCarousel
+   * @example
+   * const myCarousel = new CpCarousel();
+   **/
+  _disableCarousel() {
+    console.log('Going To Disable NOW');
     this.element.classList.add('disabled');
+    this.carouselDisabled = true;
+    if (typeof this.disableCallback === 'function') {
+      this.disableCallback(this.carouselDisabled);
+    }
   }
 
-  _enable() {
+  /**
+   * @name _enableCarousel
+   * @description TODO
+   * @method
+   * @private
+   * @memberof CpCarousel
+   * @example
+   * const myCarousel = new CpCarousel();
+   **/
+  _enableCarousel() {
     this.element.classList.remove('disabled');
+    this.carouselDisabled = false;
+    if (typeof this.disableCallback === 'function') {
+      this.disableCallback(this.carouselDisabled);
+    }
+  }
+
+  /**
+   * @name onDisable
+   * @description TODO
+   * @method
+   * @public
+   * @memberof CpCarousel
+   **/
+  onDisable(disableCallback) {
+    this.disableCallback = disableCallback;
   }
 
   /**
@@ -276,9 +318,20 @@ export class CpCarousel {
     this.stopCallBack = stopCallback;
   }
 
+  /**
+   * @name _updateA11y
+   * @description TODO
+   * @method
+   * @private
+   * @memberof CpCarousel
+   * @example
+   * const myCarousel = new CpCarousel();
+   **/
   _updateA11y() {
     const lastSlideInView =
       this.currentSlide + Math.floor(this.options.slidesInView) - 1;
+
+    console.log('---', lastSlideInView);
 
     this.slides.forEach((slide, index) => {
       if (
@@ -345,7 +398,7 @@ export class CpCarousel {
       this.mousePosition === 0 &&
       typeof this.startCallBack === 'function'
     ) {
-      this.startCallBack(this.currentSlide);
+      this.startCallBack(this._currentIndexBuffed(this.currentSlide));
     }
 
     // Only update the position of the slides if mouseDown/touchStart
@@ -376,26 +429,27 @@ export class CpCarousel {
    * const myCarousel = new CpCarousel();
    **/
   onNext() {
-    console.log('onNext', this);
-    // Fire callback
-    if (
-      this.mouseDown &&
-      this.mousePosition === 0 &&
-      typeof this.startCallBack === 'function'
-    ) {
-      this.startCallBack(this.currentSlide);
-    }
+    if (!this.isAnimating && !this.carouselDisabled) {
+      this.isAnimating = true;
+      // Fire callback
+      if (typeof this.startCallBack === 'function') {
+        this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+      }
 
-    this.animateTransition = true;
-    const targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
-    const safeSlidePosition =
-      targetSlidePosition < this.maxSliderPosition
-        ? this.maxSliderPosition
-        : targetSlidePosition;
+      this.animateTransition = true;
+      const targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
+      const safeSlidePosition =
+        targetSlidePosition < this.maxSliderPosition
+          ? this.maxSliderPosition
+          : targetSlidePosition;
 
-    if (this.options.isInfinit || safeSlidePosition >= this.maxSliderPosition) {
-      this.currentSlide = this.currentSlide + 1;
-      this._updateSliderPosition(safeSlidePosition);
+      if (
+        this.options.isInfinit ||
+        (safeSlidePosition >= this.maxSliderPosition &&
+          this.currentSlide < this.totalSlides - 1)
+      ) {
+        this._updateSliderPosition(safeSlidePosition);
+      }
     }
   }
 
@@ -409,21 +463,20 @@ export class CpCarousel {
    * const myCarousel = new CpCarousel();
    **/
   onPrevious() {
-    // Fire callback
-    if (
-      this.mouseDown &&
-      this.mousePosition === 0 &&
-      typeof this.startCallBack === 'function'
-    ) {
-      this.startCallBack(this.currentSlide);
-    }
+    if (!this.isAnimating && !this.carouselDisabled) {
+      this.isAnimating = true;
 
-    this.animateTransition = true;
-    const targetSlidePosition = -((this.currentSlide - 1) * this.slideWidth);
+      // Fire callback
+      if (typeof this.startCallBack === 'function') {
+        this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+      }
 
-    if (this.options.isInfinit || targetSlidePosition <= 0) {
-      this.currentSlide = this.currentSlide - 1;
-      this._updateSliderPosition(targetSlidePosition);
+      this.animateTransition = true;
+      const targetSlidePosition = -((this.currentSlide - 1) * this.slideWidth);
+
+      if (this.options.isInfinit || targetSlidePosition <= 0) {
+        this._updateSliderPosition(targetSlidePosition);
+      }
     }
   }
 
@@ -445,14 +498,12 @@ export class CpCarousel {
       if (this.carouselPosition + this.slideWidth > 0) {
         const lastSlide = this.totalSlides - Math.ceil(this.showSlides) * 2;
         const goToPosition = -(lastSlide * this.slideWidth);
-        this.currentSlide = this.totalSlides - 2;
         this._updateSliderPosition(goToPosition);
       } else if (
         this.carouselPosition - this.slideWidth <
         this.maxSliderPosition
       ) {
         const goToPosition = -(this.slideWidth * Math.ceil(this.showSlides));
-        this.currentSlide = Math.ceil(this.showSlides);
         this._updateSliderPosition(goToPosition);
       }
     }
@@ -460,9 +511,11 @@ export class CpCarousel {
     this._updateA11y();
 
     // Fire onSlideStop callback with currentSlideIndex
-    if (typeof this.startCallBack === 'function') {
-      this.stopCallBack(this.currentSlide);
+    if (typeof this.stopCallBack === 'function') {
+      this.stopCallBack(this._currentIndexBuffed(this.currentSlide));
     }
+
+    this.isAnimating = false;
   }
 
   /**
@@ -501,14 +554,22 @@ export class CpCarousel {
       // Set animation to true so the carousel animate when it snaps
       this.animateTransition = true;
 
-      this.currentSlide = Math.ceil(Math.abs(snapPosition / this.slideWidth));
-
+      this.mouseDown = false;
       this._updateSliderPosition(snapPosition);
     }
 
     this.mouseDown = false;
   }
 
+  /**
+   * @name _removeClonedChildren
+   * @description TODO
+   * @method
+   * @private
+   * @memberof CpCarousel
+   * @example
+   * const myCarousel = new CpCarousel();
+   **/
   _removeClonedChildren() {
     const clonedSlides = this.slider.querySelectorAll('.clone');
     const clonedSlidesLength = clonedSlides.length;
@@ -518,6 +579,7 @@ export class CpCarousel {
     }
 
     this.slides = this.slider.querySelectorAll('.cp-carousel-slider-slide');
+    this.totalSlides = this.slides.length;
   }
 
   /**
@@ -569,28 +631,23 @@ export class CpCarousel {
     let safeGoToSlide =
       this.options.firstSlideIndex < 1 ? 1 : this.options.firstSlideIndex;
 
-    console.log('*****', safeGoToSlide, this.totalSlides - this.showSlides * 2);
-
     // If carousel isInfinit and 'safeGoToSlide' is greater then total slides (not including clones)
     if (
       this.options.isInfinit &&
       safeGoToSlide >= this.totalSlides - this.showSlides * 2
     ) {
       safeGoToSlide = Math.ceil(this.showSlides);
-      console.log('3', safeGoToSlide);
     }
 
     // If carousel isInfinit and 'safeGoToSlide' exists
     else if (this.options.isInfinit && this.totalSlides > this.showSlides) {
       //safeGoToSlide = safeGoToSlide + Math.ceil(this.showSlides) - 1;
       safeGoToSlide = Math.ceil(safeGoToSlide) + Math.ceil(this.showSlides) - 1;
-      console.log('1', safeGoToSlide);
     }
 
     // If requested firstSlideIndex doesn't exist. (The number is too great) Show the first go to first slide
     else if (safeGoToSlide > this.totalSlides) {
       safeGoToSlide = 0;
-      console.log('2');
     }
 
     // TODO:
@@ -608,9 +665,11 @@ export class CpCarousel {
     }
 
     if (!this.hasEnoughSlides) {
-      this._disable();
-    } else {
-      this._enable();
+      this._disableCarousel();
+      this._removeEvents();
+    } else if (this.carouselDisabled) {
+      this._enableCarousel();
+      this._addEvents();
     }
 
     this.currentSlide = safeGoToSlide;
@@ -641,10 +700,12 @@ export class CpCarousel {
   updateOptions(newOptions) {
     this.animateTransition = false;
     let currentSlideIndex = this.currentSlide;
-    this.hasEnoughSlides = this.slides.length > newOptions.slidesInView;
+    const clonedSlidesLength = this.slider.querySelectorAll('.clone').length;
+    this.hasEnoughSlides =
+      this.slides.length - clonedSlidesLength > newOptions.slidesInView;
 
     // Adjust currentSlideIndex if there are cloned slides
-    if (this.slider.querySelectorAll('.clone').length) {
+    if (clonedSlidesLength) {
       currentSlideIndex = Math.abs(
         this.currentSlide - Math.ceil(this.options.slidesInView)
       );
@@ -677,7 +738,7 @@ export class CpCarousel {
       this.options[option] = newOptions[option];
     });
 
-    if (!this.hasEnoughSlides && this.options.isInfinit) {
+    if (!this.hasEnoughSlides) {
       this.options.isInfinit = false;
       this.options.slidesInView = this.slides.length;
     }
@@ -710,7 +771,11 @@ export class CpCarousel {
     this.slider.style.webkitTransform = `translateX(${translatePosition}%)`;
     this.slider.style.transform = `translateX(${translatePosition}%)`;
 
-    // Update Slider Position Property
+    // Update Properties
     this.carouselPosition = position;
+
+    if (!this.mouseDown) {
+      this.currentSlide = Math.abs(position / this.slideWidth);
+    }
   }
 }

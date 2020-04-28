@@ -29,34 +29,40 @@ const cpCarouselOptionsHandler = (carouselWidth) => {
   return { slidesInView: 3.5, isInfinit: true };
 };
 
+const addCarouselControls = (element, carousel) => {
+  const prevButton = element.querySelector('.cp-carousel-prev');
+  const nextButton = element.querySelector('.cp-carousel-next');
+
+  prevButton.addEventListener('click', () => {
+    carousel.onPrevious();
+  });
+  nextButton.addEventListener('click', () => {
+    carousel.onNext();
+  });
+};
+
 if (cpCarouselsLength > 0) {
   for (let i = 0; i < cpCarouselsLength; i++) {
-    const item = cpCarousels[i];
-    const itemWidth = item.clientWidth;
-    const test = new CpCarousel(item, cpCarouselOptionsHandler(itemWidth));
+    const carouselElement = cpCarousels[i];
+    const carouselElementWidth = carouselElement.clientWidth;
+    const carousel = new CpCarousel(
+      carouselElement,
+      cpCarouselOptionsHandler(carouselElementWidth)
+    );
 
-    const prevSlide = (evt) => {
-      test.updateOptions({ slidesInView: 1, firstSlideIndex: 1 });
-    };
-
-    test.onSlideStart((slideIndex) => {
-      // Do Stuff
-
+    carousel.onSlideStart((slideIndex) => {
       console.log('----- onSlideStart: ', slideIndex);
+      // Make updates to accessibility
     });
-    test.onSlideStop((slideIndex) => {
-      // Do Stuff
+    carousel.onSlideStop((slideIndex) => {
       console.log('----- onSlideStop: ', slideIndex);
+      // Make updates to accessibility
     });
 
-    const prevButton = item.querySelector('.cp-carousel-prev');
-    const nextButton = item.querySelector('.cp-carousel-next');
+    addCarouselControls(carouselElement, carousel);
 
-    prevButton.addEventListener('click', () => {
-      test.onPrevious();
-    });
-    nextButton.addEventListener('click', () => {
-      test.onNext();
+    carousel.onDisable((disabled) => {
+      console.log('----- onDisabled:', disabled);
     });
 
     let updateCarousel;
@@ -64,8 +70,8 @@ if (cpCarouselsLength > 0) {
     window.addEventListener('resize', () => {
       clearTimeout(updateCarousel);
       updateCarousel = setTimeout(() => {
-        const itemWidth = item.clientWidth;
-        test.updateOptions(cpCarouselOptionsHandler(itemWidth));
+        const itemWidth = carouselElement.clientWidth;
+        carousel.updateOptions(cpCarouselOptionsHandler(itemWidth));
       }, 1000);
     });
   }

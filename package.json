@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=prod netlify-lambda build --config ./webpack.functions.js src",
-    "start:dev": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
+    "start": "cross-env NODE_ENV=dev netlify-lambda serve --config ./webpack.functions.js src",
     "start:styleguide": "gulp serve"
   },
   "dependencies": {
