@@ -44,19 +44,22 @@ const addCarouselControls = (element, carousel) => {
 if (cpCarouselsLength > 0) {
   for (let i = 0; i < cpCarouselsLength; i++) {
     const carouselElement = cpCarousels[i];
+    const a11yLive = carouselElement.querySelector('.cp-carousel-a11y-live');
     const carouselElementWidth = carouselElement.clientWidth;
     const carousel = new CpCarousel(
       carouselElement,
       cpCarouselOptionsHandler(carouselElementWidth)
     );
 
-    carousel.onSlideStart((slideIndex) => {
-      console.log('----- onSlideStart: ', slideIndex);
+    carousel.onSlideStart((slide) => {
       // Make updates to accessibility
     });
-    carousel.onSlideStop((slideIndex) => {
-      console.log('----- onSlideStop: ', slideIndex);
+    carousel.onSlideStop((slide) => {
       // Make updates to accessibility
+      const { slideElement, slideIndex } = slide;
+      const slideLabel = slideElement.getAttribute('aria-label');
+      console.log('--- onSlideStop:', slideLabel, slide);
+      a11yLive.textContent = slideLabel;
     });
 
     addCarouselControls(carouselElement, carousel);

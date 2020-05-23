@@ -56,13 +56,18 @@ var addCarouselControls = function addCarouselControls(element, carousel) {
 if (cpCarouselsLength > 0) {
   var _loop = function _loop(i) {
     var carouselElement = cpCarousels[i];
+    var a11yLive = carouselElement.querySelector('.cp-carousel-a11y-live');
     var carouselElementWidth = carouselElement.clientWidth;
     var carousel = new _scripts.CpCarousel(carouselElement, cpCarouselOptionsHandler(carouselElementWidth));
-    carousel.onSlideStart(function (slideIndex) {
-      console.log('----- onSlideStart: ', slideIndex); // Make updates to accessibility
+    carousel.onSlideStart(function (slide) {// Make updates to accessibility
     });
-    carousel.onSlideStop(function (slideIndex) {
-      console.log('----- onSlideStop: ', slideIndex); // Make updates to accessibility
+    carousel.onSlideStop(function (slide) {
+      // Make updates to accessibility
+      var slideElement = slide.slideElement,
+          slideIndex = slide.slideIndex;
+      var slideLabel = slideElement.getAttribute('aria-label');
+      console.log('--- onSlideStop:', slideLabel, slide);
+      a11yLive.textContent = slideLabel;
     });
     addCarouselControls(carouselElement, carousel);
     carousel.onDisable(function (disabled) {
@@ -184,6 +189,7 @@ var CpCarousel = /*#__PURE__*/function () {
     this._onClick = this._onClick.bind(this);
     this._onDown = this._onDown.bind(this);
     this._onMove = this._onMove.bind(this);
+    this._onTouch = this._onTouch.bind(this);
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
     this._onUp = this._onUp.bind(this);
 
@@ -205,33 +211,38 @@ var CpCarousel = /*#__PURE__*/function () {
   _createClass(CpCarousel, [{
     key: "_addEvents",
     value: function _addEvents() {
-      this.slider.addEventListener('click', this._onClick, false);
-      this.slider.addEventListener('mousedown', this._onDown, false);
-      this.slider.addEventListener('touchstart', this._onDown, false);
-      this.slider.addEventListener('mousemove', this._onMove, false);
-      this.slider.addEventListener('touchmove', this._onMove, false);
-      this.slider.addEventListener('mouseleave', this._onUp, false);
-      this.slider.addEventListener('mouseup', this._onUp, false);
-      this.slider.addEventListener('touchend', this._onUp, false);
-      this.slider.addEventListener('transitionend', this._onTransitionEnd, false);
+      this.slider.addEventListener('click', this._onClick);
+      this.slider.addEventListener('mousedown', this._onDown);
+      this.slider.addEventListener('touchstart', this._onDown);
+      this.slider.addEventListener('touchstart', this._onTouch);
+      this.slider.addEventListener('mousemove', this._onMove);
+      this.slider.addEventListener('touchmove', this._onMove);
+      this.slider.addEventListener('mouseleave', this._onUp);
+      this.slider.addEventListener('mouseup', this._onUp);
+      this.slider.addEventListener('touchend', this._onUp);
+      this.slider.addEventListener('transitionend', this._onTransitionEnd);
     }
   }, {
     key: "_removeEvents",
     value: function _removeEvents() {
-      this.slider.removeEventListener('click', this._onClick, false);
-      this.slider.removeEventListener('mousedown', this._onDown, false);
-      this.slider.removeEventListener('touchstart', this._onDown, false);
-      this.slider.removeEventListener('mousemove', this._onMove, false);
-      this.slider.removeEventListener('touchmove', this._onMove, false);
-      this.slider.removeEventListener('mouseleave', this._onUp, false);
-      this.slider.removeEventListener('mouseup', this._onUp, false);
-      this.slider.removeEventListener('touchend', this._onUp, false);
-      this.slider.removeEventListener('transitionend', this._onTransitionEnd, false);
+      this.slider.removeEventListener('click', this._onClick);
+      this.slider.removeEventListener('mousedown', this._onDown);
+      this.slider.removeEventListener('touchstart', this._onDown);
+      this.slider.removeEventListener('touchstart', this._onTouch);
+      this.slider.removeEventListener('mousemove', this._onMove);
+      this.slider.removeEventListener('touchmove', this._onMove);
+      this.slider.removeEventListener('mouseleave', this._onUp);
+      this.slider.removeEventListener('mouseup', this._onUp);
+      this.slider.removeEventListener('touchend', this._onUp);
+      this.slider.removeEventListener('transitionend', this._onTransitionEnd);
     } // _onSlideFocus(event) {
-    //   if (!this.mouseDown) {
+    //   if (!this.mouseDown && !touchstart) {
     //     this.currentSlide = [...this.slides].indexOf(event.target);
     //     const targetSlidePosition = -(this.currentSlide * this.slideWidth);
-    //     const safeSlidePosition = targetSlidePosition < this.maxSliderPosition ? this.maxSliderPosition : targetSlidePosition;
+    //     const safeSlidePosition =
+    //       targetSlidePosition < this.maxSliderPosition
+    //         ? this.maxSliderPosition
+    //         : targetSlidePosition;
     //     this.animateTransition = true;
     //     this.onSlideStart(this.currentSlide);
     //     this._updateSliderPosition(safeSlidePosition);
@@ -301,9 +312,8 @@ var CpCarousel = /*#__PURE__*/function () {
       var numberOfSlides = this.slides.length;
 
       var clonedSlideElement = function clonedSlideElement(element) {
-        var clonedElement = document.createElement(element.tagName.toLowerCase());
-        clonedElement.innerHTML = element.innerHTML;
-        clonedElement.className = "".concat(element.className, " clone");
+        var clonedElement = element.cloneNode(true);
+        clonedElement.classList.add('clone');
         clonedElement.setAttribute('aria-hidden', 'true');
         clonedElement.setAttribute('tabindex', '-1');
         return clonedElement;
@@ -482,7 +492,7 @@ var CpCarousel = /*#__PURE__*/function () {
               });
             });
           }
-        } else if (index >= _this2.currentSlide && index <= lastSlideInView && !slide.classList.contains('clone')) {
+        } else if (index >= _this2.currentSlide && index <= lastSlideInView) {
           slide.setAttribute('aria-hidden', false);
           slide.setAttribute('tabindex', '0');
           slide.querySelectorAll('a').forEach(function (anchor) {
@@ -549,7 +559,10 @@ var CpCarousel = /*#__PURE__*/function () {
       event.preventDefault(); // Fire callback
 
       if (this.mouseDown && this.mousePosition === 0 && typeof this.startCallBack === 'function') {
-        this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+        this.startCallBack({
+          slideElement: this.slides[this.currentSlide],
+          slideIndex: this._currentIndexBuffed(this.currentSlide)
+        });
       } // Only update the position of the slides if mouseDown/touchStart
 
 
@@ -583,7 +596,10 @@ var CpCarousel = /*#__PURE__*/function () {
       if (!this.isAnimating && !this.carouselDisabled) {
         // Fire callback
         if (typeof this.startCallBack === 'function') {
-          this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+          this.startCallBack({
+            slideElement: this.slides[this.currentSlide],
+            slideIndex: this._currentIndexBuffed(this.currentSlide)
+          });
         }
 
         var targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
@@ -613,7 +629,10 @@ var CpCarousel = /*#__PURE__*/function () {
       if (!this.isAnimating && !this.carouselDisabled) {
         // Fire callback
         if (typeof this.startCallBack === 'function') {
-          this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+          this.startCallBack({
+            slideElement: this.slides[this.currentSlide],
+            slideIndex: this._currentIndexBuffed(this.currentSlide)
+          });
         }
 
         var targetSlidePosition = -((this.currentSlide - 1) * this.slideWidth);
@@ -625,6 +644,21 @@ var CpCarousel = /*#__PURE__*/function () {
           this._updateSliderPosition(targetSlidePosition);
         }
       }
+    }
+    /**
+     * @name _onTouch
+     * @description Handles touch specific events
+     * @method
+     * @private
+     * @memberof CpCarousel
+     * @example
+     * const myCarousel = new CpCarousel();
+     **/
+
+  }, {
+    key: "_onTouch",
+    value: function _onTouch(event) {
+      this.element.classList.add('touch');
     }
     /**
      * @name _onTransitionEnd
@@ -660,7 +694,10 @@ var CpCarousel = /*#__PURE__*/function () {
 
 
       if (typeof this.stopCallBack === 'function') {
-        this.stopCallBack(this._currentIndexBuffed(this.currentSlide));
+        this.stopCallBack({
+          slideElement: this.slides[this.currentSlide],
+          slideIndex: this._currentIndexBuffed(this.currentSlide)
+        });
       }
 
       this.isAnimating = false;

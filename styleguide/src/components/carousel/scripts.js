@@ -34,6 +34,7 @@ export class CpCarousel {
     this.wrapper = this.element.querySelector('.cp-carousel-wrapper');
     this.slider = this.wrapper.querySelector('.cp-carousel-slider');
     this.slides = this.slider.querySelectorAll('.cp-carousel-slider-slide');
+
     this.hasEnoughSlides = this.slides.length > this.options.slidesInView;
 
     if (this.options.isInfinit && this.hasEnoughSlides) {
@@ -62,6 +63,7 @@ export class CpCarousel {
     this._onClick = this._onClick.bind(this);
     this._onDown = this._onDown.bind(this);
     this._onMove = this._onMove.bind(this);
+    this._onTouch = this._onTouch.bind(this);
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
     this._onUp = this._onUp.bind(this);
 
@@ -80,38 +82,39 @@ export class CpCarousel {
   @private
   */
   _addEvents() {
-    this.slider.addEventListener('click', this._onClick, false);
-    this.slider.addEventListener('mousedown', this._onDown, false);
-    this.slider.addEventListener('touchstart', this._onDown, false);
-    this.slider.addEventListener('mousemove', this._onMove, false);
-    this.slider.addEventListener('touchmove', this._onMove, false);
-    this.slider.addEventListener('mouseleave', this._onUp, false);
-    this.slider.addEventListener('mouseup', this._onUp, false);
-    this.slider.addEventListener('touchend', this._onUp, false);
-    this.slider.addEventListener('transitionend', this._onTransitionEnd, false);
+    this.slider.addEventListener('click', this._onClick);
+    this.slider.addEventListener('mousedown', this._onDown);
+    this.slider.addEventListener('touchstart', this._onDown);
+    this.slider.addEventListener('touchstart', this._onTouch);
+    this.slider.addEventListener('mousemove', this._onMove);
+    this.slider.addEventListener('touchmove', this._onMove);
+    this.slider.addEventListener('mouseleave', this._onUp);
+    this.slider.addEventListener('mouseup', this._onUp);
+    this.slider.addEventListener('touchend', this._onUp);
+    this.slider.addEventListener('transitionend', this._onTransitionEnd);
   }
 
   _removeEvents() {
-    this.slider.removeEventListener('click', this._onClick, false);
-    this.slider.removeEventListener('mousedown', this._onDown, false);
-    this.slider.removeEventListener('touchstart', this._onDown, false);
-    this.slider.removeEventListener('mousemove', this._onMove, false);
-    this.slider.removeEventListener('touchmove', this._onMove, false);
-    this.slider.removeEventListener('mouseleave', this._onUp, false);
-    this.slider.removeEventListener('mouseup', this._onUp, false);
-    this.slider.removeEventListener('touchend', this._onUp, false);
-    this.slider.removeEventListener(
-      'transitionend',
-      this._onTransitionEnd,
-      false
-    );
+    this.slider.removeEventListener('click', this._onClick);
+    this.slider.removeEventListener('mousedown', this._onDown);
+    this.slider.removeEventListener('touchstart', this._onDown);
+    this.slider.removeEventListener('touchstart', this._onTouch);
+    this.slider.removeEventListener('mousemove', this._onMove);
+    this.slider.removeEventListener('touchmove', this._onMove);
+    this.slider.removeEventListener('mouseleave', this._onUp);
+    this.slider.removeEventListener('mouseup', this._onUp);
+    this.slider.removeEventListener('touchend', this._onUp);
+    this.slider.removeEventListener('transitionend', this._onTransitionEnd);
   }
 
   // _onSlideFocus(event) {
-  //   if (!this.mouseDown) {
+  //   if (!this.mouseDown && !touchstart) {
   //     this.currentSlide = [...this.slides].indexOf(event.target);
   //     const targetSlidePosition = -(this.currentSlide * this.slideWidth);
-  //     const safeSlidePosition = targetSlidePosition < this.maxSliderPosition ? this.maxSliderPosition : targetSlidePosition;
+  //     const safeSlidePosition =
+  //       targetSlidePosition < this.maxSliderPosition
+  //         ? this.maxSliderPosition
+  //         : targetSlidePosition;
 
   //     this.animateTransition = true;
   //     this.onSlideStart(this.currentSlide);
@@ -174,12 +177,8 @@ export class CpCarousel {
     const numberOfSlides = this.slides.length;
 
     const clonedSlideElement = (element) => {
-      const clonedElement = document.createElement(
-        element.tagName.toLowerCase()
-      );
-
-      clonedElement.innerHTML = element.innerHTML;
-      clonedElement.className = `${element.className} clone`;
+      const clonedElement = element.cloneNode(true);
+      clonedElement.classList.add('clone');
       clonedElement.setAttribute('aria-hidden', 'true');
       clonedElement.setAttribute('tabindex', '-1');
 
@@ -343,11 +342,7 @@ export class CpCarousel {
             });
           });
         }
-      } else if (
-        index >= this.currentSlide &&
-        index <= lastSlideInView &&
-        !slide.classList.contains('clone')
-      ) {
+      } else if (index >= this.currentSlide && index <= lastSlideInView) {
         slide.setAttribute('aria-hidden', false);
         slide.setAttribute('tabindex', '0');
         slide.querySelectorAll('a').forEach((anchor) => {
@@ -413,7 +408,10 @@ export class CpCarousel {
       this.mousePosition === 0 &&
       typeof this.startCallBack === 'function'
     ) {
-      this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+      this.startCallBack({
+        slideElement: this.slides[this.currentSlide],
+        slideIndex: this._currentIndexBuffed(this.currentSlide),
+      });
     }
 
     // Only update the position of the slides if mouseDown/touchStart
@@ -447,7 +445,10 @@ export class CpCarousel {
     if (!this.isAnimating && !this.carouselDisabled) {
       // Fire callback
       if (typeof this.startCallBack === 'function') {
-        this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+        this.startCallBack({
+          slideElement: this.slides[this.currentSlide],
+          slideIndex: this._currentIndexBuffed(this.currentSlide),
+        });
       }
 
       const targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
@@ -481,7 +482,10 @@ export class CpCarousel {
     if (!this.isAnimating && !this.carouselDisabled) {
       // Fire callback
       if (typeof this.startCallBack === 'function') {
-        this.startCallBack(this._currentIndexBuffed(this.currentSlide));
+        this.startCallBack({
+          slideElement: this.slides[this.currentSlide],
+          slideIndex: this._currentIndexBuffed(this.currentSlide),
+        });
       }
 
       const targetSlidePosition = -((this.currentSlide - 1) * this.slideWidth);
@@ -492,6 +496,19 @@ export class CpCarousel {
         this._updateSliderPosition(targetSlidePosition);
       }
     }
+  }
+
+  /**
+   * @name _onTouch
+   * @description Handles touch specific events
+   * @method
+   * @private
+   * @memberof CpCarousel
+   * @example
+   * const myCarousel = new CpCarousel();
+   **/
+  _onTouch(event) {
+    this.element.classList.add('touch');
   }
 
   /**
@@ -526,7 +543,10 @@ export class CpCarousel {
 
     // Fire onSlideStop callback with currentSlideIndex
     if (typeof this.stopCallBack === 'function') {
-      this.stopCallBack(this._currentIndexBuffed(this.currentSlide));
+      this.stopCallBack({
+        slideElement: this.slides[this.currentSlide],
+        slideIndex: this._currentIndexBuffed(this.currentSlide),
+      });
     }
 
     this.isAnimating = false;

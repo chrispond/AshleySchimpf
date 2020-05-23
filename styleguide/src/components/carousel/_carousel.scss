@@ -25,6 +25,24 @@
     }
   }
 
+  &:not(.touch) {
+    .cp-carousel-slider-slide:focus {
+      outline: 0;
+
+      &:after {
+        content: '';
+        width: 100%;
+        height: 500%;
+        display: block;
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
   &-slider {
     width: 100%;
     margin: 0;
@@ -49,28 +67,12 @@
 
     vertical-align: top;
     white-space: normal;
-    background: $yellow;
 
     > *:last-child {
       margin-bottom: 0;
     }
 
-    &:focus {
-      outline: 0;
-
-      &:before {
-        content: '';
-        width: 100%;
-        height: 100%;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: rgba(255, 255, 255, 0.2);
-      }
-    }
-
-    &:after {
+    &:before {
       content: '';
       width: 1px;
       height: 500%;
@@ -84,7 +86,7 @@
     }
 
     &:last-child {
-      &:after {
+      &:before {
         display: none;
       }
     }
