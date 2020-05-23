@@ -48,9 +48,9 @@
                       <%
                         blogPosts.forEach(post => { 
                       %>
-                    <li class="cp-carousel-slider-slide">
+                    <li aria-label="<%= post.data.blog_title_short %>" class="cp-carousel-slider-slide">
                       <article>
-                        <a href="blog/<%= post.uid %>">
+                        <a aria-label="Read about <%= post.data.blog_title_short %>" href="blog/<%= post.uid %>">
                           <h3><%= post.data.blog_title_short %></h3>
                           <p><%= post.data.blurb %></p>
                         </a>

@@ -87,8 +87,8 @@
                   <% }) %>
                 </div>
 
-                <aside aria-labelledby="carouselheading">
-                  <h2 id="carouselheading"><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
+                <aside>
+                  <h2><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
                   <div class="cp-carousel full-width-small">
                       <div class="cp-carousel-wrapper">
                         <ul class="cp-carousel-slider">                            
@@ -98,9 +98,9 @@
                                   return
                                 }
                             %>
-                          <li class="cp-carousel-slider-slide">
+                          <li aria-label="<%= post.data.blog_title_short %>" class="cp-carousel-slider-slide">
                             <article>
-                              <a href="<%= post.uid %>">
+                              <a aria-label="Read about <%= post.data.blog_title_short %>" href="<%= post.uid %>">
                                 <h3><%= post.data.blog_title_short %></h3>
                                 <p><%= post.data.blurb %></p>
                               </a>

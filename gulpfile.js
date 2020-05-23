@@ -1,122 +1,102 @@
-//GULP PLUGINS
-const gulp = require("gulp");
-const gutil = require("gulp-util");
-const browserify = require("browserify");
-const babelify = require("babelify");
-const buffer = require("vinyl-buffer");
-const source = require("vinyl-source-stream");
-const compass = require("gulp-compass");
-const connect = require("gulp-connect");
-const gulpif = require("gulp-if");
-const uglify = require("gulp-uglify");
-const template = require("gulp-template-html");
-const injectPartials = require("gulp-inject-partials");
+//Plugins
+const { dest, parallel, series, src, watch } = require('gulp');
+const babelify = require('babelify');
+const browserify = require('browserify');
+const browserSync = require('browser-sync');
+const buffer = require('vinyl-buffer');
+const gulpif = require('gulp-if');
+const gutil = require('gulp-util');
+const injectPartials = require('gulp-inject-partials');
+const sass = require('gulp-sass');
+const source = require('vinyl-source-stream');
+const template = require('gulp-template-html');
+const uglify = require('gulp-uglify');
 
-//PROJECT VARIABLES
-const rootFolder = "styleguide/";
-const prodFolder = "dist/public/";
-const srcFolder = `${rootFolder}src/`;
-const buildsFolder = `${rootFolder}builds/`;
-// const env = process.env.NODE_ENV || "dev";
-const env = "prod";
-const outputDir = env === "prod" ? prodFolder : `${buildsFolder}development/`;
-const sassStyle = env != "dev" ? "expanded" : "compressed";
+// Directories
+const rootDir = 'styleguide/';
+const buildDir = `${rootDir}builds/`;
+const distDir = `dist/public/`;
+const srcDir = `${rootDir}src/`;
 
-const jsFiles = [`${srcFolder}base/scripts/*.js`, `${srcFolder}**/scripts.js`];
-const sassFiles = [`${srcFolder}base/sass/*.scss`];
+// Files
+const htmlFiles = [`${srcDir}**/*.html`];
+const scriptFiles = [`${srcDir}**/*.js`];
+const stylesFiles = [`${srcDir}**/*.scss`];
 
-//JS
-gulp.task("jsCompile", () => {
-  browserify({ debug: false })
-    .transform(babelify, { presets: ["@babel/preset-env"] })
-    .add(`${srcFolder}base/scripts/global.js`)
-    .bundle()
-    // .on('error', logError)
-    .pipe(source("global.js"))
-    // Prod only steps
-    .pipe(buffer()) // Need to buffer in order to uglify
-    .pipe(gulpif(env === "prod", uglify()))
-    // end prod only steps
-    .pipe(gulp.dest(outputDir + "scripts"))
-    .pipe(connect.reload());
-});
+// Settings
+const env = {
+  DEV: 'dev',
+  PROD: 'prod',
+};
+const envVar = env.PROD; //process.env.NODE_ENV || "dev"
+const outputDir = envVar === env.PROD ? distDir : `${buildDir}development/`;
+const sassOutput = envVar === env.PROD ? 'compressed' : 'expanded';
+sass.compiler = require('node-sass');
 
-//CSS
-gulp.task("cssCompile", () =>
-  gulp
-    .src(sassFiles)
-    .pipe(
-      compass({
-        sass: `${srcFolder}base/sass`,
-        style: sassStyle,
-      })
-    )
-    .on("error", gutil.log)
-    .pipe(gulp.dest(outputDir + "styles"))
-    .pipe(connect.reload())
-);
+const htmlBuild = (callback) => {
+  // Build Components
+  src(`${srcDir}components/*/index.html`)
+    .pipe(injectPartials({ removeTags: true }))
+    .pipe(template(`${srcDir}templates/component/index.html`))
+    .pipe(dest(`${buildDir}development/components/`));
 
-gulp.task("connect", () =>
-  connect.server({
-    root: outputDir,
-    livereload: true,
-    host: "0.0.0.0",
+  // Build Templates
+  src(`${srcDir}templates/*/*.html`)
+    .pipe(injectPartials({ removeTags: true }))
+    .pipe(dest(`${buildDir}development/templates/`));
+
+  callback();
+};
+
+/*
+ * Images are hosted through prismic. This is just for local development to help with styling
+ */
+const images = (callback) => {
+  src(`${rootDir}assets/images/*.*`).pipe(dest(`${buildDir}assets/images/`));
+  callback();
+};
+
+const localServe = (callback) => {
+  browserSync.init({
+    notify: false,
+    open: false,
+    server: {
+      baseDir: buildDir,
+    },
+  });
+  callback();
+};
+
+const scriptsCompile = (callback) => {
+  browserify({
+    entries: [`${srcDir}base/scripts/global.js`],
   })
+    .transform(babelify, { presets: ['@babel/preset-env'] })
+    .bundle()
+    .on('error', gutil.log)
+    .pipe(source('global.js'))
+    .pipe(buffer())
+    .pipe(gulpif(env === env.PROD, uglify()))
+    .pipe(dest(`${outputDir}scripts/`));
+  callback();
+};
+
+const stylesCompile = (callback) => {
+  src(`${srcDir}base/sass/global.scss`)
+    .pipe(sass({ outputStyle: sassOutput }).on('error', sass.logError))
+    .pipe(dest(`${outputDir}styles/`));
+  callback();
+};
+
+const watchFiles = (callback) => {
+  watch(scriptFiles).on('change', series(scriptsCompile, browserSync.reload));
+  watch(stylesFiles).on('change', series(stylesCompile, browserSync.reload));
+  watch(htmlFiles).on('change', series(htmlBuild, browserSync.reload));
+  callback();
+};
+
+exports.default = series(
+  parallel(htmlBuild, stylesCompile, scriptsCompile, images),
+  localServe,
+  watchFiles
 );
-
-//Grab all component and put them into a template
-gulp.task("components", function () {
-  gulp
-    .src(`${srcFolder}components/*/index.html`)
-    .pipe(
-      injectPartials({
-        removeTags: true,
-      })
-    )
-    .pipe(template(`${srcFolder}templates/component/index.html`))
-    .pipe(gulp.dest(`${buildsFolder}development/components/`))
-    .pipe(connect.reload());
-});
-
-//Build Templates
-gulp.task("templates", () => {
-  gulp
-    .src(`${srcFolder}templates/*/*.html`)
-    .pipe(
-      injectPartials({
-        removeTags: true,
-      })
-    )
-    .pipe(gulp.dest(`${buildsFolder}development/templates/`));
-});
-
-//Copy Images
-gulp.task("copyImages", () => {
-  gulp
-    .src(`${rootFolder}assets/images/*.*`)
-    .pipe(gulp.dest(outputDir + "assets/images/"));
-});
-
-//Watches changes in files
-gulp.task("watch", () => {
-  gulp.watch(jsFiles, gulp.series(["jsCompile"]));
-  gulp.watch(
-    [`${srcFolder}*/*/*.scss`, `${srcFolder}*/*/*/*.scss`],
-    gulp.series(["cssCompile"])
-  );
-  gulp.watch(`${srcFolder}**/*.html`, gulp.series(["templates", "components"]));
-});
-
-gulp.task(
-  "serve",
-  gulp.parallel(
-    "jsCompile",
-    "cssCompile",
-    "components",
-    "templates",
-    "copyImages",
-    "connect",
-    "watch"
-  )
-);
-gulp.task("build", gulp.parallel("jsCompile", "cssCompile"));

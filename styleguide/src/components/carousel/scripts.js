@@ -221,10 +221,11 @@ export class CpCarousel {
 
       for (let i = 1; i < index; i++) {
         startIndex = startIndex === originalSlidesLength ? 1 : startIndex + 1;
-        console.log('***', index, startIndex);
       }
 
       buffedIndex = startIndex;
+    } else {
+      buffedIndex = buffedIndex + 1;
     }
     return buffedIndex;
   }
@@ -331,19 +332,33 @@ export class CpCarousel {
     const lastSlideInView =
       this.currentSlide + Math.floor(this.options.slidesInView) - 1;
 
-    console.log('---', lastSlideInView);
-
     this.slides.forEach((slide, index) => {
-      if (
+      if (this.carouselDisabled) {
+        {
+          this.slides.forEach((slide) => {
+            slide.removeAttribute('tabindex');
+            slide.removeAttribute('aria-hidden');
+            slide.querySelectorAll('a').forEach((anchor) => {
+              anchor.removeAttribute('tabindex');
+            });
+          });
+        }
+      } else if (
         index >= this.currentSlide &&
         index <= lastSlideInView &&
         !slide.classList.contains('clone')
       ) {
         slide.setAttribute('aria-hidden', false);
         slide.setAttribute('tabindex', '0');
-      } else {
+        slide.querySelectorAll('a').forEach((anchor) => {
+          anchor.removeAttribute('tabindex');
+        });
+      } else if (!this.carouselDisabled) {
         slide.setAttribute('aria-hidden', true);
         slide.setAttribute('tabindex', '-1');
+        slide.querySelectorAll('a').forEach((anchor) => {
+          anchor.setAttribute('tabindex', '-1');
+        });
       }
     });
   }
@@ -430,13 +445,11 @@ export class CpCarousel {
    **/
   onNext() {
     if (!this.isAnimating && !this.carouselDisabled) {
-      this.isAnimating = true;
       // Fire callback
       if (typeof this.startCallBack === 'function') {
         this.startCallBack(this._currentIndexBuffed(this.currentSlide));
       }
 
-      this.animateTransition = true;
       const targetSlidePosition = -((this.currentSlide + 1) * this.slideWidth);
       const safeSlidePosition =
         targetSlidePosition < this.maxSliderPosition
@@ -448,6 +461,8 @@ export class CpCarousel {
         (safeSlidePosition >= this.maxSliderPosition &&
           this.currentSlide < this.totalSlides - 1)
       ) {
+        this.isAnimating = true;
+        this.animateTransition = true;
         this._updateSliderPosition(safeSlidePosition);
       }
     }
@@ -464,17 +479,16 @@ export class CpCarousel {
    **/
   onPrevious() {
     if (!this.isAnimating && !this.carouselDisabled) {
-      this.isAnimating = true;
-
       // Fire callback
       if (typeof this.startCallBack === 'function') {
         this.startCallBack(this._currentIndexBuffed(this.currentSlide));
       }
 
-      this.animateTransition = true;
       const targetSlidePosition = -((this.currentSlide - 1) * this.slideWidth);
 
       if (this.options.isInfinit || targetSlidePosition <= 0) {
+        this.isAnimating = true;
+        this.animateTransition = true;
         this._updateSliderPosition(targetSlidePosition);
       }
     }
