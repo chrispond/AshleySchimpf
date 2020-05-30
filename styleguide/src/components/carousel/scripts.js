@@ -49,8 +49,8 @@ export class CpCarousel {
     this.isAnimating = false;
     this.maxSliderPosition = 0;
     this.mouseDown = false;
-    this.mouseMove = 0;
-    this.mousePosition = 0;
+    this.mouseMove = { x: 0, y: 0 };
+    this.mousePosition = { x: 0, y: 0 };
     this.showSlides = 0;
     this.swipeNext = false;
     this.totalSlides = this.slides.length;
@@ -186,17 +186,20 @@ export class CpCarousel {
     };
 
     // Clone first visible slides and add them to the end of the carousel
-    Object.entries(this.slides)
+    Object.keys(this.slides)
       .slice(numberOfSlides - numberOfClones, numberOfSlides)
       .forEach((slide) => {
-        this.slider.insertBefore(clonedSlideElement(slide[1]), this.slides[0]);
+        this.slider.insertBefore(
+          clonedSlideElement(this.slides[slide]),
+          this.slides[0]
+        );
       });
 
     // Clone the last visible slides and add them to the start of the carousel
-    Object.entries(this.slides)
+    Object.keys(this.slides)
       .slice(0, numberOfClones)
       .forEach((slide) => {
-        this.slider.appendChild(clonedSlideElement(slide[1]));
+        this.slider.appendChild(clonedSlideElement(this.slides[slide]));
       });
 
     this.slides = this.slider.querySelectorAll('.cp-carousel-slider-slide');
@@ -256,7 +259,6 @@ export class CpCarousel {
    * const myCarousel = new CpCarousel();
    **/
   _disableCarousel() {
-    console.log('Going To Disable NOW');
     this.element.classList.add('disabled');
     this.carouselDisabled = true;
     if (typeof this.disableCallback === 'function') {
@@ -368,7 +370,7 @@ export class CpCarousel {
    * const myCarousel = new CpCarousel();
    **/
   _onClick(event) {
-    if (this.mousePosition !== 0) {
+    if (this.mousePosition.x !== 0) {
       event.preventDefault();
     }
   }
@@ -385,8 +387,11 @@ export class CpCarousel {
   _onDown() {
     this.animateTransition = false;
     this.mouseDown = true;
-    this.mousePosition = 0;
-    this.mouseMove = event.clientX || event.touches[0].clientX;
+    this.mousePosition = { x: 0, y: 0 };
+    this.mouseMove = {
+      x: event.clientX || event.touches[0].clientX,
+      y: event.clientY || event.touches[0].clientY,
+    };
     this.carouselStartPosition = this.carouselPosition;
   }
 
@@ -400,12 +405,24 @@ export class CpCarousel {
    * const myCarousel = new CpCarousel();
    **/
   _onMove(event) {
-    event.preventDefault();
+    // Calculate new positions
+    const mouseMoveNew = {
+      x: event.clientX || event.touches[0].clientX,
+      y: event.clientY || event.touches[0].clientY,
+    };
+    const mousePositionNew = {
+      x: this.mousePosition.x + (mouseMoveNew.x - this.mouseMove.x),
+      y: this.mousePosition.y + (mouseMoveNew.y - this.mouseMove.y),
+    };
+
+    // Update properties
+    this.mousePosition = mousePositionNew;
+    this.mouseMove = mouseMoveNew;
 
     // Fire callback
     if (
       this.mouseDown &&
-      this.mousePosition === 0 &&
+      this.mousePosition.x === 0 &&
       typeof this.startCallBack === 'function'
     ) {
       this.startCallBack({
@@ -414,19 +431,15 @@ export class CpCarousel {
       });
     }
 
-    // Only update the position of the slides if mouseDown/touchStart
-    if (this.mouseDown) {
-      // Calculate new positions
-      const mouseMoveNew = event.clientX || event.touches[0].clientX;
-      const mousePositionNew =
-        this.mousePosition + (mouseMoveNew - this.mouseMove);
+    // Only update the position of the slides if mouseDown/touchStart & moving horizontal
+    if (
+      this.mouseDown &&
+      Math.abs(this.mousePosition.x) > Math.abs(this.mousePosition.y)
+    ) {
+      event.preventDefault();
       const position = this._calcDragPos(
-        (mousePositionNew / this.wrapperWidth) * 100
+        (mousePositionNew.x / this.wrapperWidth) * 100
       );
-
-      // Update properties
-      this.mousePosition = mousePositionNew;
-      this.mouseMove = mouseMoveNew;
 
       this._updateSliderPosition(position);
     }
@@ -690,12 +703,10 @@ export class CpCarousel {
       this.totalSlides + this.showSlides
     ) {
       safeGoToSlide -= this.showSlides;
-      console.log('5', safeGoToSlide);
 
       // TODO:
     } else {
       safeGoToSlide -= 1;
-      console.log('4');
     }
 
     if (!this.hasEnoughSlides) {

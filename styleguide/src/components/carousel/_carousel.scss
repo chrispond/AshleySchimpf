@@ -1,7 +1,5 @@
 .cp-carousel {
   position: relative;
-  padding-bottom: $vertical-gap-medium-desktop;
-  overflow: hidden;
 
   // Required Carousel Styles
   &-wrapper {
@@ -18,6 +16,7 @@
     .cp-carousel-wrapper {
       cursor: grab;
       user-select: none;
+      -webkit-user-drag: none;
 
       &:active {
         cursor: grabbing;
@@ -98,7 +97,7 @@
     height: calc(#{$vertical-gap-medium-desktop} - 0.2rem);
     position: absolute;
     right: $vertical-gap-small-desktop;
-    bottom: $vertical-gap-medium-desktop;
+    bottom: 0;
     overflow: hidden;
     text-indent: -999px;
     background: $brown;
@@ -117,11 +116,11 @@
       height: 33%;
       display: block;
       position: absolute;
+      z-index: 1;
       bottom: 50%;
-      right: 58%;
-      border-top: solid 0.2rem #fff;
-      border-right: solid 0.2rem #fff;
-      transform: translate(50%, 50%) rotate(45deg);
+      right: 55%;
+      box-shadow: inset 0.2rem 0.2rem 0 #fff;
+      transform: translate(50%, 50%) rotate(135deg);
     }
   }
 
@@ -138,8 +137,8 @@
     );
 
     &:before {
-      right: 42%;
-      transform: translate(50%, 50%) rotate(225deg);
+      right: 45%;
+      transform: translate(50%, 50%) rotate(-45deg);
     }
   }
 
@@ -192,7 +191,7 @@
 
   h3 {
     margin-bottom: calc(#{$vertical-gap-small-desktop} - 0.7rem);
-    font-family: $sans-serif-font;
+    @include sans-serif-font;
     font-size: 1.8rem;
     text-transform: uppercase;
     line-height: 100%;
@@ -207,7 +206,7 @@
 
   .time-stamp {
     font-size: 1.4rem;
-    color: #fff;
-    opacity: 0.75;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.95);
   }
 }

@@ -58,21 +58,17 @@ if (cpCarouselsLength > 0) {
     var carouselElement = cpCarousels[i];
     var a11yLive = carouselElement.querySelector('.cp-carousel-a11y-live');
     var carouselElementWidth = carouselElement.clientWidth;
-    var carousel = new _scripts.CpCarousel(carouselElement, cpCarouselOptionsHandler(carouselElementWidth));
-    carousel.onSlideStart(function (slide) {// Make updates to accessibility
-    });
+    var carousel = new _scripts.CpCarousel(carouselElement, cpCarouselOptionsHandler(carouselElementWidth)); // Add Next/Previous toggle controls
+
+    addCarouselControls(carouselElement, carousel); // Handle carousel callback functions
+
     carousel.onSlideStop(function (slide) {
-      // Make updates to accessibility
-      var slideElement = slide.slideElement,
-          slideIndex = slide.slideIndex;
+      var slideElement = slide.slideElement; // i18n: Announce slide update
+
       var slideLabel = slideElement.getAttribute('aria-label');
-      console.log('--- onSlideStop:', slideLabel, slide);
       a11yLive.textContent = slideLabel;
-    });
-    addCarouselControls(carouselElement, carousel);
-    carousel.onDisable(function (disabled) {
-      console.log('----- onDisabled:', disabled);
-    });
+    }); // Update carousel options onResize
+
     var updateCarousel = void 0;
     window.addEventListener('resize', function () {
       clearTimeout(updateCarousel);
@@ -176,8 +172,14 @@ var CpCarousel = /*#__PURE__*/function () {
     this.isAnimating = false;
     this.maxSliderPosition = 0;
     this.mouseDown = false;
-    this.mouseMove = 0;
-    this.mousePosition = 0;
+    this.mouseMove = {
+      x: 0,
+      y: 0
+    };
+    this.mousePosition = {
+      x: 0,
+      y: 0
+    };
     this.showSlides = 0;
     this.swipeNext = false;
     this.totalSlides = this.slides.length;
@@ -320,12 +322,12 @@ var CpCarousel = /*#__PURE__*/function () {
       }; // Clone first visible slides and add them to the end of the carousel
 
 
-      Object.entries(this.slides).slice(numberOfSlides - numberOfClones, numberOfSlides).forEach(function (slide) {
-        _this.slider.insertBefore(clonedSlideElement(slide[1]), _this.slides[0]);
+      Object.keys(this.slides).slice(numberOfSlides - numberOfClones, numberOfSlides).forEach(function (slide) {
+        _this.slider.insertBefore(clonedSlideElement(_this.slides[slide]), _this.slides[0]);
       }); // Clone the last visible slides and add them to the start of the carousel
 
-      Object.entries(this.slides).slice(0, numberOfClones).forEach(function (slide) {
-        _this.slider.appendChild(clonedSlideElement(slide[1]));
+      Object.keys(this.slides).slice(0, numberOfClones).forEach(function (slide) {
+        _this.slider.appendChild(clonedSlideElement(_this.slides[slide]));
       });
       this.slides = this.slider.querySelectorAll('.cp-carousel-slider-slide');
       this.totalSlides = this.slides.length;
@@ -394,7 +396,6 @@ var CpCarousel = /*#__PURE__*/function () {
   }, {
     key: "_disableCarousel",
     value: function _disableCarousel() {
-      console.log('Going To Disable NOW');
       this.element.classList.add('disabled');
       this.carouselDisabled = true;
 
@@ -520,7 +521,7 @@ var CpCarousel = /*#__PURE__*/function () {
   }, {
     key: "_onClick",
     value: function _onClick(event) {
-      if (this.mousePosition !== 0) {
+      if (this.mousePosition.x !== 0) {
         event.preventDefault();
       }
     }
@@ -539,8 +540,14 @@ var CpCarousel = /*#__PURE__*/function () {
     value: function _onDown() {
       this.animateTransition = false;
       this.mouseDown = true;
-      this.mousePosition = 0;
-      this.mouseMove = event.clientX || event.touches[0].clientX;
+      this.mousePosition = {
+        x: 0,
+        y: 0
+      };
+      this.mouseMove = {
+        x: event.clientX || event.touches[0].clientX,
+        y: event.clientY || event.touches[0].clientY
+      };
       this.carouselStartPosition = this.carouselPosition;
     }
     /**
@@ -556,26 +563,31 @@ var CpCarousel = /*#__PURE__*/function () {
   }, {
     key: "_onMove",
     value: function _onMove(event) {
-      event.preventDefault(); // Fire callback
+      // Calculate new positions
+      var mouseMoveNew = {
+        x: event.clientX || event.touches[0].clientX,
+        y: event.clientY || event.touches[0].clientY
+      };
+      var mousePositionNew = {
+        x: this.mousePosition.x + (mouseMoveNew.x - this.mouseMove.x),
+        y: this.mousePosition.y + (mouseMoveNew.y - this.mouseMove.y)
+      }; // Update properties
 
-      if (this.mouseDown && this.mousePosition === 0 && typeof this.startCallBack === 'function') {
+      this.mousePosition = mousePositionNew;
+      this.mouseMove = mouseMoveNew; // Fire callback
+
+      if (this.mouseDown && this.mousePosition.x === 0 && typeof this.startCallBack === 'function') {
         this.startCallBack({
           slideElement: this.slides[this.currentSlide],
           slideIndex: this._currentIndexBuffed(this.currentSlide)
         });
-      } // Only update the position of the slides if mouseDown/touchStart
+      } // Only update the position of the slides if mouseDown/touchStart & moving horizontal
 
 
-      if (this.mouseDown) {
-        // Calculate new positions
-        var mouseMoveNew = event.clientX || event.touches[0].clientX;
-        var mousePositionNew = this.mousePosition + (mouseMoveNew - this.mouseMove);
+      if (this.mouseDown && Math.abs(this.mousePosition.x) > Math.abs(this.mousePosition.y)) {
+        event.preventDefault();
 
-        var position = this._calcDragPos(mousePositionNew / this.wrapperWidth * 100); // Update properties
-
-
-        this.mousePosition = mousePositionNew;
-        this.mouseMove = mouseMoveNew;
+        var position = this._calcDragPos(mousePositionNew.x / this.wrapperWidth * 100);
 
         this._updateSliderPosition(position);
       }
@@ -824,11 +836,9 @@ var CpCarousel = /*#__PURE__*/function () {
             safeGoToSlide = 0;
           } // TODO:
           else if (safeGoToSlide + this.showSlides >= this.totalSlides + this.showSlides) {
-              safeGoToSlide -= this.showSlides;
-              console.log('5', safeGoToSlide); // TODO:
+              safeGoToSlide -= this.showSlides; // TODO:
             } else {
               safeGoToSlide -= 1;
-              console.log('4');
             }
 
       if (!this.hasEnoughSlides) {

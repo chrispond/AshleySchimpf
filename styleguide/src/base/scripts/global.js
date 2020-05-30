@@ -19,6 +19,7 @@ window.CpTrimString = CpTrimString;
 //Carousel Initialization
 const cpCarousels = document.querySelectorAll('.cp-carousel');
 const cpCarouselsLength = cpCarousels.length;
+
 const cpCarouselOptionsHandler = (carouselWidth) => {
   if (carouselWidth <= 480) {
     return { slidesInView: 1, isInfinit: false };
@@ -51,23 +52,19 @@ if (cpCarouselsLength > 0) {
       cpCarouselOptionsHandler(carouselElementWidth)
     );
 
-    carousel.onSlideStart((slide) => {
-      // Make updates to accessibility
-    });
+    // Add Next/Previous toggle controls
+    addCarouselControls(carouselElement, carousel);
+
+    // Handle carousel callback functions
     carousel.onSlideStop((slide) => {
-      // Make updates to accessibility
-      const { slideElement, slideIndex } = slide;
+      const { slideElement } = slide;
+
+      // i18n: Announce slide update
       const slideLabel = slideElement.getAttribute('aria-label');
-      console.log('--- onSlideStop:', slideLabel, slide);
       a11yLive.textContent = slideLabel;
     });
 
-    addCarouselControls(carouselElement, carousel);
-
-    carousel.onDisable((disabled) => {
-      console.log('----- onDisabled:', disabled);
-    });
-
+    // Update carousel options onResize
     let updateCarousel;
 
     window.addEventListener('resize', () => {

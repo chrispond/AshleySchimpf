@@ -15,6 +15,8 @@ body {
   margin: 0 auto;
   padding-bottom: $vertical-gap-medium;
   background-color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 /*-----

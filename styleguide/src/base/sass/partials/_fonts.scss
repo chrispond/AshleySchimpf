@@ -8,44 +8,23 @@ $font-size-body-desktop: 1.8rem;
 $font-size-body-large-desktop: 1.8rem;
 
 //Font Weights
-$font-weight-regular: 100;
-$font-weight-medium: 400;
-$font-weight-bold: 600;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
 
-/*-Global Classes to be used as extends
-EXAMPLE:
-h4.yourClass{
-  @extend .sans-serif-font-regular;
-  color:$green;
-}
-*/
-
-@mixin sans-serif-font-regular {
- font-family: $sans-serif-font;
- font-weight: $font-weight-regular;
- letter-spacing: 0;
-}
-
-@mixin sans-serif-font-medium {
- font-family: $sans-serif-font;
- font-weight: $font-weight-medium;
- letter-spacing: 0;
-}
-
-@mixin sans-serif-font-bold {
- font-family: $sans-serif-font;
- font-weight: $font-weight-bold;
- letter-spacing: 0.05rem;
+@mixin sans-serif-font {
+  font-family: $sans-serif-font;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0;
 }
 
 @mixin serif-font-regular {
- font-family: $serif-font;
- font-weight: $font-weight-regular;
- letter-spacing: 0;
+  font-family: $serif-font;
+  font-weight: $font-weight-regular;
+  letter-spacing: 0;
 }
 
 @mixin serif-font-bold {
- font-family: $serif-font;
- font-weight: $font-weight-bold;
- letter-spacing: 0;
+  font-family: $serif-font;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0;
 }

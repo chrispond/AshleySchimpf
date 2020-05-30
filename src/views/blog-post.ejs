@@ -56,67 +56,82 @@
                 </p>
                 <h1 class="text-center"><%= PrismicDOM.RichText.asText(blogPost.data.blog_title_long) %></h1>
 
-                <div>
-                  <% blogPost.data.body.forEach(function(slice){ %>
-                    <% if (slice.slice_type == "text") { %>
-                      <%- PrismicDOM.RichText.asHtml(slice.primary.text) %>
-                    <% } %> 
-                    
-                    <% if (slice.slice_type == "list") { %>
-                      <%- PrismicDOM.RichText.asHtml(slice.primary.list) %>
-                    <% } %>
-          
-                    <% if (slice.slice_type == "heading") { %>
-                      <%- PrismicDOM.RichText.asHtml(slice.primary.heading) %>
-                    <% } %>
-          
-                    <% if (slice.slice_type == "image") { %>
+                <% blogPost.data.body.forEach(function(slice){ %>
+                  <% if (slice.slice_type == "text") { %>
+                    <%- PrismicDOM.RichText.asHtml(slice.primary.text) %>
+                  <% } %> 
+                  
+                  <% if (slice.slice_type == "list") { %>
+                    <%- PrismicDOM.RichText.asHtml(slice.primary.list) %>
+                  <% } %>
+        
+                  <% if (slice.slice_type == "heading") { %>
+                    <%- PrismicDOM.RichText.asHtml(slice.primary.heading) %>
+                  <% } %>
+        
+                  <% if (slice.slice_type == "image") { %>
+                    <div>
                       <img 
-                        alt="<%- slice.primary.image.alt %>" 
-                        height="<%- slice.primary.image.dimensions.height %>" 
-                        src="<%- slice.primary.image.url %>" 
-                        width="<%- slice.primary.image.dimensions.width %>" />
-                    <% } %>
-          
-                    <% if (slice.slice_type == "quote") { %>
-                      <blockquote class="pull-quote">
-                          <%- PrismicDOM.RichText.asText(slice.primary.quote) %>
-                        <cite>- <%- PrismicDOM.RichText.asText(slice.primary.name_of_the_author) %></cite>
-                      </blockquote>
-                    <% } %>
-                  <% }) %>
+                      alt="<%- slice.primary.image.alt %>" 
+                      class="full-width-small"
+                      height="<%- slice.primary.image.dimensions.height %>" 
+                      src="<%- slice.primary.image.url %>" 
+                      width="<%- slice.primary.image.dimensions.width %>" />
+                      <div class="shadow"></div>
+                    </div>
+                    
+                  <% } %>
+        
+                  <% if (slice.slice_type == "quote") { %>
+                    <blockquote class="pull-quote full-width-small">
+                        <%- PrismicDOM.RichText.asText(slice.primary.quote) %>
+                      <cite>- <%- PrismicDOM.RichText.asText(slice.primary.name_of_the_author) %></cite>
+                      <div class="shadow"></div>
+                    </blockquote>
+                  <% } %>
+                <% }) %>
+
+                
+                <div>
+                  <img 
+                  alt="My Image" 
+                  class="full-width-small"
+                  height="600" 
+                  src="//via.placeholder.com/1400x600"
+                  width="1400" />
+                  <div class="shadow"></div>
                 </div>
 
                 <aside>
                   <h2><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
                   <div class="cp-carousel full-width-small">
-                      <div class="cp-carousel-wrapper">
-                        <ul class="cp-carousel-slider">                            
-                            <%
-                              blogPosts.forEach(post => { 
-                                if(blogPost.uid === post.uid){
-                                  return
-                                }
-                            %>
-                          <li aria-label="<%= post.data.blog_title_short %>" class="cp-carousel-slider-slide">
-                            <article>
-                              <a aria-label="Read about <%= post.data.blog_title_short %>" href="<%= post.uid %>">
-                                <h3><%= post.data.blog_title_short %></h3>
-                                <p><%= post.data.blurb %></p>
-                              </a>
-                              <p class="time-stamp">
-                                <%= utils.prettyDate(post.data.post_date) %> | ~<%= utils.readTime(post.data.body) %> min read
-                              </p>
-                            </article>
-                          </li>
-                          <% }); %>
-                        </ul>
-                      </div>
-
-                      <button aria-label="Previous Article" class="cp-carousel-prev">Previous Article</button>
-                      <button aria-label="Next Article" class="cp-carousel-next">Next Article</button>
-                      <div aria-live="polite" class="a11y cp-carousel-a11y-live"></div>
+                    <div class="cp-carousel-wrapper">
+                      <ul class="cp-carousel-slider">                            
+                          <%
+                            blogPosts.forEach(post => { 
+                              if(blogPost.uid === post.uid){
+                                return
+                              }
+                          %>
+                        <li aria-label="<%= post.data.blog_title_short %>" class="cp-carousel-slider-slide">
+                          <article>
+                            <a aria-label="Read about <%= post.data.blog_title_short %>" href="<%= post.uid %>">
+                              <h3><%= post.data.blog_title_short %></h3>
+                              <p><%= post.data.blurb %></p>
+                            </a>
+                            <p class="time-stamp">
+                              <%= utils.prettyDate(post.data.post_date) %> | ~<%= utils.readTime(post.data.body) %> min read
+                            </p>
+                          </article>
+                        </li>
+                        <% }); %>
+                      </ul>
                     </div>
+
+                    <button aria-label="Previous Article" class="cp-carousel-prev">Previous Article</button>
+                    <button aria-label="Next Article" class="cp-carousel-next">Next Article</button>
+                    <div aria-live="polite" class="a11y cp-carousel-a11y-live"></div>
+                  </div>
                 </aside>
           
                 <h2><%- PrismicDOM.RichText.asText(global.contact_title) %></h2>
