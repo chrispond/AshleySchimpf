@@ -13,7 +13,7 @@ body {
   width: 100%;
   max-width: $desktop-width;
   margin: 0 auto;
-  padding-bottom: $vertical-gap-medium;
+  overflow: hidden;
   background-color: #fff;
   position: relative;
   z-index: 1;

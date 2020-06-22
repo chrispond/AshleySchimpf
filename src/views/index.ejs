@@ -42,7 +42,7 @@
         <main role="main">
           <section class="bg-white">
               <h2><%= PrismicDOM.RichText.asText(global.blog_feed_title) %></h2>
-              <div class="cp-carousel full-width-small">
+              <div class="cp-carousel full-width-small shadow">
                 <div class="cp-carousel-wrapper">
                   <ul class="cp-carousel-slider">                        
                       <%
@@ -66,8 +66,10 @@
                 <button aria-label="Previous Article" class="cp-carousel-prev">Previous Article</button>
                 <button aria-label="Next Article" class="cp-carousel-next">Next Article</button>
                 <div aria-live="polite" class="a11y cp-carousel-a11y-live"></div>
+                <div class="shadow-box"></div>
               </div>
           </section>
+          <div class="footer">&copy; <%= utils.currentYear %> Ashley Schimpf</div>
         </main>
       </div>
 

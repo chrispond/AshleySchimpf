@@ -484,15 +484,11 @@ var CpCarousel = /*#__PURE__*/function () {
       var lastSlideInView = this.currentSlide + Math.floor(this.options.slidesInView) - 1;
       this.slides.forEach(function (slide, index) {
         if (_this2.carouselDisabled) {
-          {
-            _this2.slides.forEach(function (slide) {
-              slide.removeAttribute('tabindex');
-              slide.removeAttribute('aria-hidden');
-              slide.querySelectorAll('a').forEach(function (anchor) {
-                anchor.removeAttribute('tabindex');
-              });
-            });
-          }
+          slide.removeAttribute('tabindex');
+          slide.removeAttribute('aria-hidden');
+          slide.querySelectorAll('a').forEach(function (anchor) {
+            anchor.removeAttribute('tabindex');
+          });
         } else if (index >= _this2.currentSlide && index <= lastSlideInView) {
           slide.setAttribute('aria-hidden', false);
           slide.setAttribute('tabindex', '0');

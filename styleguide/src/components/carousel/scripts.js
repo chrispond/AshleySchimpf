@@ -335,15 +335,11 @@ export class CpCarousel {
 
     this.slides.forEach((slide, index) => {
       if (this.carouselDisabled) {
-        {
-          this.slides.forEach((slide) => {
-            slide.removeAttribute('tabindex');
-            slide.removeAttribute('aria-hidden');
-            slide.querySelectorAll('a').forEach((anchor) => {
-              anchor.removeAttribute('tabindex');
-            });
-          });
-        }
+        slide.removeAttribute('tabindex');
+        slide.removeAttribute('aria-hidden');
+        slide.querySelectorAll('a').forEach((anchor) => {
+          anchor.removeAttribute('tabindex');
+        });
       } else if (index >= this.currentSlide && index <= lastSlideInView) {
         slide.setAttribute('aria-hidden', false);
         slide.setAttribute('tabindex', '0');
