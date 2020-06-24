@@ -10,6 +10,7 @@
 import { CpCarousel } from '../../components/carousel/scripts';
 import { CpTrimParagraph } from '../../components/trim-paragraph/scripts';
 import { CpTrimString } from '../../components/trim-string/scripts';
+import { InViewAnimate } from '../../components/shadow/scripts';
 
 // GLOBAL OBJECTS
 window.CpCarousel = CpCarousel;
@@ -98,3 +99,20 @@ if (cpTrimmedStringsLength > 0) {
     new CpTrimString(item);
   }
 }
+
+//Shadow Initialization
+const shadowElements = document.querySelectorAll('.shadow');
+const shadowElementsLength = shadowElements.length;
+const animateData = {
+  animateInData: {
+    rotate: 0.003,
+  },
+  animateOutData: {
+    rotate: -0.003,
+  },
+  startAnimate: 0,
+  endAnimate: 1,
+};
+
+const item = shadowElements[0].querySelector('.shadow-box');
+new InViewAnimate(item, animateData);

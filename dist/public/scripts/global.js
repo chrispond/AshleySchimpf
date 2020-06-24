@@ -7,6 +7,8 @@ var _scripts2 = require("../../components/trim-paragraph/scripts");
 
 var _scripts3 = require("../../components/trim-string/scripts");
 
+var _scripts4 = require("../../components/shadow/scripts");
+
 /**
  *@name Global Scripts
  *@file This brings all the scripts together, to be used.
@@ -90,8 +92,8 @@ var cpTrimmedParagraphsLength = cpTrimmedParagraphs.length;
 
 if (cpTrimmedParagraphsLength > 0) {
   for (var _i = 0; _i < cpTrimmedParagraphsLength; _i++) {
-    var item = cpTrimmedParagraphs[_i];
-    new _scripts2.CpTrimParagraph(item, 150);
+    var _item = cpTrimmedParagraphs[_i];
+    new _scripts2.CpTrimParagraph(_item, 150);
   }
 } //Trim String Initialization
 
@@ -101,12 +103,28 @@ var cpTrimmedStringsLength = cpTrimmedStrings.length;
 
 if (cpTrimmedStringsLength > 0) {
   for (var _i2 = 0; _i2 < cpTrimmedStringsLength; _i2++) {
-    var _item = cpTrimmedStrings[_i2];
-    new _scripts3.CpTrimString(_item);
+    var _item2 = cpTrimmedStrings[_i2];
+    new _scripts3.CpTrimString(_item2);
   }
-}
+} //Shadow Initialization
 
-},{"../../components/carousel/scripts":2,"../../components/trim-paragraph/scripts":3,"../../components/trim-string/scripts":4}],2:[function(require,module,exports){
+
+var shadowElements = document.querySelectorAll('.shadow');
+var shadowElementsLength = shadowElements.length;
+var animateData = {
+  animateInData: {
+    rotate: 0.003
+  },
+  animateOutData: {
+    rotate: -0.003
+  },
+  startAnimate: 0,
+  endAnimate: 1
+};
+var item = shadowElements[0].querySelector('.shadow-box');
+new _scripts4.InViewAnimate(item, animateData);
+
+},{"../../components/carousel/scripts":2,"../../components/shadow/scripts":3,"../../components/trim-paragraph/scripts":4,"../../components/trim-string/scripts":5}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -957,6 +975,221 @@ exports.CpCarousel = CpCarousel;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.InViewAnimate = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/**
+ *@name Shadow Scripts
+ *@file
+ *@copyright ChrisPond.com
+ *@author Chris Pond
+ *@version 1.0.0
+ */
+
+/**
+ * @name Shadow
+ * @description Triggers/applies motion to the shadow component
+ * @param {object} element - Required: DOM element to apply the shadow to
+ * @example
+ * const myShadow = new Shadow(document.querySelector('.my-shadow'));
+ **/
+var InViewAnimate = /*#__PURE__*/function () {
+  _createClass(InViewAnimate, null, [{
+    key: "calcAxis",
+    value: function calcAxis(animate, axis) {
+      return 100 - ((1 - axis) * animate + axis) * 100;
+    }
+  }, {
+    key: "calcRotate",
+    value: function calcRotate(animate, rotate) {
+      return rotate * animate - rotate;
+    }
+  }, {
+    key: "calcScale",
+    value: function calcScale(animate, scale) {
+      return (1 - scale) * animate + scale;
+    }
+  }]);
+
+  function InViewAnimate(element, data) {
+    _classCallCheck(this, InViewAnimate);
+
+    // Elements
+    this.element = element; // Data
+
+    this.data = data;
+    this.startData = this.data.startAnimate || 0;
+    this.endData = this.data.endAnimate || 1; // Events
+
+    this._onResize = this._onResize.bind(this);
+    this._onScroll = this._onScroll.bind(this);
+    this._animateElement = this._animateElement.bind(this); // this._onTouchEnd = this._onTouchEnd.bind(this);
+    // this._onTouchMove = this._onTouchMove.bind(this);
+    // this._onTouchStart = this._onTouchStart.bind(this);
+
+    this._addEvents();
+
+    this._setProperties();
+  }
+
+  _createClass(InViewAnimate, [{
+    key: "_animateElement",
+    value: function _animateElement() {
+      console.log('this:', this);
+      this.isScrolling = false;
+      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      this.elementDistance = this.element.getBoundingClientRect().top; //Start focus
+
+      var animateInPercent = (this.elementDistance - this.focusPoint) / this.inFocusDiff;
+      var animateOutPercent = (this.elementDistance - this.focusPoint) / this.outFocusDiff;
+      var transformStyles = '';
+
+      if (animateOutPercent < 1 && animateOutPercent > 0) {
+        var outPercent = 1 - animateOutPercent;
+        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = 1 - animateOutPercent;
+        if (this.data.animateOutData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(outPercent, this.data.animateOutData.x), "%)");
+        if (this.data.animateOutData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(outPercent, this.data.animateOutData.y), "%)");
+        if (this.data.animateOutData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(outPercent, this.data.animateOutData.scale), ")");
+        if (this.data.animateOutData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(outPercent, this.data.animateOutData.rotate), "turn)");
+      } else {
+        var startOrFinished = animateOutPercent < 0 ? 1 : 0;
+        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = animateOutPercent < 0 ? 1 : 0;
+        if (this.data.animateOutData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(startOrFinished, this.data.animateOutData.x), "%)");
+        if (this.data.animateOutData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(startOrFinished, this.data.animateOutData.y), "%)");
+        if (this.data.animateOutData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(startOrFinished, this.data.animateOutData.scale), ")");
+        if (this.data.animateOutData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(startOrFinished, this.data.animateOutData.rotate), "turn)");
+      }
+
+      if (animateInPercent < 1 && animateInPercent > 0) {
+        var inPercent = 1 - animateInPercent;
+        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = 1 - animateInPercent;
+        if (this.data.animateInData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(inPercent, this.data.animateInData.x), "%)");
+        if (this.data.animateInData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(inPercent, this.data.animateInData.y), "%)");
+        if (this.data.animateInData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(inPercent, this.data.animateInData.scale), ")");
+        if (this.data.animateInData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(inPercent, this.data.animateInData.rotate), "turn)");
+      } else {
+        var _startOrFinished = animateInPercent < 0 ? 1 : 0;
+
+        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = animateInPercent < 0 ? 1 : 0;
+        if (this.data.animateInData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(_startOrFinished, this.data.animateInData.x), "%)");
+        if (this.data.animateInData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(_startOrFinished, this.data.animateInData.y), "%)");
+        if (this.data.animateInData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(_startOrFinished, this.data.animateInData.scale), ")");
+        if (this.data.animateInData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(_startOrFinished, this.data.animateInData.rotate), "turn)");
+      }
+
+      this.element.style.webkitTransform = transformStyles;
+      this.element.style.transform = transformStyles;
+    }
+    /**
+    @name _addEvents
+    @description Handles iniating event listeners
+    @memberof InViewTrigger
+    @method
+    @private
+    */
+
+  }, {
+    key: "_addEvents",
+    value: function _addEvents() {
+      window.addEventListener('resize', this._onResize);
+      document.addEventListener('scroll', this._onScroll);
+    }
+    /**
+    @name _onReszie
+    @description Recalculates scroll position & inFocus position
+    @memberof InViewTrigger
+    @method
+    @private
+    */
+
+  }, {
+    key: "_onResize",
+    value: function _onResize() {
+      var _this = this;
+
+      // Initiate setTimeout to determine when resizing is over
+      if (this.resizeTimer) {
+        window.clearTimeout(this.resizeTimer);
+      }
+
+      this.resizeTimer = window.setTimeout(function () {
+        _this._setProperties();
+
+        _this.resizeTimer = undefined;
+      }, 400);
+    }
+  }, {
+    key: "_setProperties",
+    value: function _setProperties() {
+      this.elementPositionTop = this.element.getBoundingClientRect().top;
+      this.elementHeight = this.element.clientHeight;
+      this.elementMiddle = this.elementHeight / 2;
+      this.resizeTimer = undefined;
+      this.isScrolling = false;
+      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      this.windowHeight = window.innerHeight;
+      this.inFocusPoint = this.windowHeight * (1 - this.startData) - this.elementMiddle;
+      this.outFocusPoint = this.windowHeight * (1 - this.endData) - this.elementMiddle;
+      this.focusPoint = this.windowHeight * 0.5 - this.elementMiddle;
+      this.inFocusDiff = this.inFocusPoint - this.focusPoint;
+      this.outFocusDiff = this.outFocusPoint - this.focusPoint; // Update Scroll Positions
+
+      this._onScroll();
+    }
+  }, {
+    key: "_removeEvents",
+    value: function _removeEvents() {
+      window.removeEventListener('resize', this._onResize);
+      document.removeEventListener('scroll', this._onScroll);
+    }
+    /**
+    @name _onScroll
+    @description Tracks scroll position
+    @memberof InViewTrigger
+    @method
+    @private
+    */
+
+  }, {
+    key: "_onScroll",
+    value: function _onScroll() {
+      console.log('scroll:', this); // Updated Properties
+
+      if (!this.isScrolling) {
+        window.requestAnimationFrame(this._animateElement);
+        this.isScrolling = true;
+      }
+    }
+  }]);
+
+  return InViewAnimate;
+}();
+/*
+-calcAxis
+-calcRotate
+-calcScale
+-addEvents
+-onResize
+-onScroll
+-removeEvents
+-setProperties
+updateAnimations
+*/
+
+
+exports.InViewAnimate = InViewAnimate;
+
+},{}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.CpTrimParagraph = exports.errors = void 0;
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1123,7 +1356,7 @@ var CpTrimParagraph = /*#__PURE__*/function () {
 
 exports.CpTrimParagraph = CpTrimParagraph;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
