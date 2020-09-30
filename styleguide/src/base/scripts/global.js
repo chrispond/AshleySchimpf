@@ -104,15 +104,26 @@ if (cpTrimmedStringsLength > 0) {
 const shadowElements = document.querySelectorAll('.shadow');
 const shadowElementsLength = shadowElements.length;
 const animateData = {
+  animateFocus: {
+    fade: 0.2,
+    rotate: 0.015,
+  },
   animateInData: {
-    rotate: 0.003,
+    fade: 0.1,
+    rotate: 0,
   },
   animateOutData: {
-    rotate: -0.003,
+    fade: 0.1,
+    rotate: 0,
   },
-  startAnimate: 0,
-  endAnimate: 1,
+  startAnimate: 0.2, // start
+  endAnimate: 0.8, // finish
+  // add focus point
 };
 
-const item = shadowElements[0].querySelector('.shadow-box');
-new InViewAnimate(item, animateData);
+if (shadowElementsLength > 0) {
+  for (let i = 0; i < shadowElementsLength; i++) {
+    const item = shadowElements[i].querySelector('.shadow-box');
+    new InViewAnimate(item, animateData);
+  }
+}

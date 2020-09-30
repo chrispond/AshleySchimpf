@@ -92,8 +92,8 @@ var cpTrimmedParagraphsLength = cpTrimmedParagraphs.length;
 
 if (cpTrimmedParagraphsLength > 0) {
   for (var _i = 0; _i < cpTrimmedParagraphsLength; _i++) {
-    var _item = cpTrimmedParagraphs[_i];
-    new _scripts2.CpTrimParagraph(_item, 150);
+    var item = cpTrimmedParagraphs[_i];
+    new _scripts2.CpTrimParagraph(item, 150);
   }
 } //Trim String Initialization
 
@@ -103,8 +103,8 @@ var cpTrimmedStringsLength = cpTrimmedStrings.length;
 
 if (cpTrimmedStringsLength > 0) {
   for (var _i2 = 0; _i2 < cpTrimmedStringsLength; _i2++) {
-    var _item2 = cpTrimmedStrings[_i2];
-    new _scripts3.CpTrimString(_item2);
+    var _item = cpTrimmedStrings[_i2];
+    new _scripts3.CpTrimString(_item);
   }
 } //Shadow Initialization
 
@@ -112,17 +112,32 @@ if (cpTrimmedStringsLength > 0) {
 var shadowElements = document.querySelectorAll('.shadow');
 var shadowElementsLength = shadowElements.length;
 var animateData = {
+  animateFocus: {
+    fade: 0.2,
+    rotate: 0.015
+  },
   animateInData: {
-    rotate: 0.003
+    fade: 0.1,
+    rotate: 0
   },
   animateOutData: {
-    rotate: -0.003
+    fade: 0.1,
+    rotate: 0
   },
-  startAnimate: 0,
-  endAnimate: 1
+  startAnimate: 0.2,
+  // start
+  endAnimate: 0.8 // finish
+  // add focus point
+
 };
-var item = shadowElements[0].querySelector('.shadow-box');
-new _scripts4.InViewAnimate(item, animateData);
+
+if (shadowElementsLength > 0) {
+  for (var _i3 = 0; _i3 < shadowElementsLength; _i3++) {
+    var _item2 = shadowElements[_i3].querySelector('.shadow-box');
+
+    new _scripts4.InViewAnimate(_item2, animateData);
+  }
+}
 
 },{"../../components/carousel/scripts":2,"../../components/shadow/scripts":3,"../../components/trim-paragraph/scripts":4,"../../components/trim-string/scripts":5}],2:[function(require,module,exports){
 "use strict";
@@ -1000,26 +1015,23 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  **/
 var InViewAnimate = /*#__PURE__*/function () {
   _createClass(InViewAnimate, null, [{
-    key: "calcAxis",
-    value: function calcAxis(animate, axis) {
-      return 100 - ((1 - axis) * animate + axis) * 100;
-    }
-  }, {
-    key: "calcRotate",
-    value: function calcRotate(animate, rotate) {
-      return rotate * animate - rotate;
-    }
-  }, {
-    key: "calcScale",
-    value: function calcScale(animate, scale) {
-      return (1 - scale) * animate + scale;
+    key: "calcAnimate",
+    value: function calcAnimate(animate, from, to) {
+      if (from > to) {
+        var difference = from - to;
+        return from - difference * animate;
+      } else {
+        var _difference = to - from;
+
+        return from + _difference * animate;
+      }
     }
   }]);
 
   function InViewAnimate(element, data) {
     _classCallCheck(this, InViewAnimate);
 
-    // Elements
+    // Element
     this.element = element; // Data
 
     this.data = data;
@@ -1040,46 +1052,43 @@ var InViewAnimate = /*#__PURE__*/function () {
   _createClass(InViewAnimate, [{
     key: "_animateElement",
     value: function _animateElement() {
-      console.log('this:', this);
       this.isScrolling = false;
-      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      this.elementDistance = this.element.getBoundingClientRect().top; //Start focus
+
+      this._setElementProperties();
+
+      this._setFocusProperties(); //Start focus
+
 
       var animateInPercent = (this.elementDistance - this.focusPoint) / this.inFocusDiff;
       var animateOutPercent = (this.elementDistance - this.focusPoint) / this.outFocusDiff;
       var transformStyles = '';
 
       if (animateOutPercent < 1 && animateOutPercent > 0) {
-        var outPercent = 1 - animateOutPercent;
-        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = 1 - animateOutPercent;
-        if (this.data.animateOutData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(outPercent, this.data.animateOutData.x), "%)");
-        if (this.data.animateOutData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(outPercent, this.data.animateOutData.y), "%)");
-        if (this.data.animateOutData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(outPercent, this.data.animateOutData.scale), ")");
-        if (this.data.animateOutData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(outPercent, this.data.animateOutData.rotate), "turn)");
-      } else {
-        var startOrFinished = animateOutPercent < 0 ? 1 : 0;
-        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = animateOutPercent < 0 ? 1 : 0;
-        if (this.data.animateOutData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(startOrFinished, this.data.animateOutData.x), "%)");
-        if (this.data.animateOutData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(startOrFinished, this.data.animateOutData.y), "%)");
-        if (this.data.animateOutData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(startOrFinished, this.data.animateOutData.scale), ")");
-        if (this.data.animateOutData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(startOrFinished, this.data.animateOutData.rotate), "turn)");
-      }
-
-      if (animateInPercent < 1 && animateInPercent > 0) {
+        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.fade, this.data.animateOutData.fade);
+        if (this.data.animateOutData.x !== undefined) transformStyles += "translateX(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.x, this.data.animateOutData.x), "%)");
+        if (this.data.animateOutData.y !== undefined) transformStyles += "translateY(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.y, this.data.animateOutData.y), "%)");
+        if (this.data.animateOutData.scale !== undefined) transformStyles += "scale(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.scale, this.data.animateOutData.scale), ")");
+        if (this.data.animateOutData.rotate !== undefined) transformStyles += "rotate(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.rotate, this.data.animateOutData.rotate), "turn)");
+      } else if (animateOutPercent >= 1) {
+        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = this.data.animateOutData.fade;
+        if (this.data.animateOutData.x !== undefined) transformStyles += "translateX(".concat(this.data.animateOutData.x, "%)");
+        if (this.data.animateOutData.y !== undefined) transformStyles += "translateY(".concat(this.data.animateOutData.y, "%)");
+        if (this.data.animateOutData.scale !== undefined) transformStyles += "scale(".concat(this.data.animateOutData.scale, ")");
+        if (this.data.animateOutData.rotate !== undefined) transformStyles += "rotate(".concat(this.data.animateOutData.rotate, "turn)");
+      } else if (animateInPercent < 1 && animateInPercent > 0) {
         var inPercent = 1 - animateInPercent;
         if (this.data.animateInData.fade !== undefined) this.element.style.opacity = 1 - animateInPercent;
-        if (this.data.animateInData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(inPercent, this.data.animateInData.x), "%)");
-        if (this.data.animateInData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(inPercent, this.data.animateInData.y), "%)");
-        if (this.data.animateInData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(inPercent, this.data.animateInData.scale), ")");
-        if (this.data.animateInData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(inPercent, this.data.animateInData.rotate), "turn)");
-      } else {
-        var _startOrFinished = animateInPercent < 0 ? 1 : 0;
-
-        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = animateInPercent < 0 ? 1 : 0;
-        if (this.data.animateInData.x) transformStyles += "translateX(".concat(InViewAnimate.calcAxis(_startOrFinished, this.data.animateInData.x), "%)");
-        if (this.data.animateInData.y) transformStyles += "translateY(".concat(InViewAnimate.calcAxis(_startOrFinished, this.data.animateInData.y), "%)");
-        if (this.data.animateInData.scale) transformStyles += "scale(".concat(InViewAnimate.calcScale(_startOrFinished, this.data.animateInData.scale), ")");
-        if (this.data.animateInData.rotate) transformStyles += "rotate(".concat(InViewAnimate.calcRotate(_startOrFinished, this.data.animateInData.rotate), "turn)");
+        this.element.style.opacity = InViewAnimate.calcAnimate(inPercent, this.data.animateInData.fade, this.data.animateFocus.fade);
+        if (this.data.animateInData.x !== undefined) transformStyles += "translateX(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.x, this.data.animateFocus.x), "%)");
+        if (this.data.animateInData.y !== undefined) transformStyles += "translateY(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.y, this.data.animateFocus.y), "%)");
+        if (this.data.animateInData.scale !== undefined) transformStyles += "scale(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.scale, this.data.animateFocus.scale), ")");
+        if (this.data.animateInData.rotate !== undefined) transformStyles += "rotate(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.rotate, this.data.animateFocus.rotate), "turn)");
+      } else if (animateInPercent >= 1) {
+        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = this.data.animateInData.fade;
+        if (this.data.animateInData.x !== undefined) transformStyles += "translateX(".concat(this.data.animateInData.x, "%)");
+        if (this.data.animateInData.y !== undefined) transformStyles += "translateY(".concat(this.data.animateInData.y, "%)");
+        if (this.data.animateInData.scale !== undefined) transformStyles += "scale(".concat(this.data.animateInData.scale, ")");
+        if (this.data.animateInData.rotate !== undefined) transformStyles += "rotate(".concat(this.data.animateInData.rotate, "turn)");
       }
 
       this.element.style.webkitTransform = transformStyles;
@@ -1124,20 +1133,33 @@ var InViewAnimate = /*#__PURE__*/function () {
       }, 400);
     }
   }, {
-    key: "_setProperties",
-    value: function _setProperties() {
-      this.elementPositionTop = this.element.getBoundingClientRect().top;
-      this.elementHeight = this.element.clientHeight;
+    key: "_setElementProperties",
+    value: function _setElementProperties() {
+      var elementRect = this.element.getBoundingClientRect();
+      this.elementDistance = elementRect.top;
+      this.elementHeight = elementRect.height;
       this.elementMiddle = this.elementHeight / 2;
-      this.resizeTimer = undefined;
-      this.isScrolling = false;
-      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    }
+  }, {
+    key: "_setFocusProperties",
+    value: function _setFocusProperties() {
       this.windowHeight = window.innerHeight;
+      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
       this.inFocusPoint = this.windowHeight * (1 - this.startData) - this.elementMiddle;
       this.outFocusPoint = this.windowHeight * (1 - this.endData) - this.elementMiddle;
       this.focusPoint = this.windowHeight * 0.5 - this.elementMiddle;
       this.inFocusDiff = this.inFocusPoint - this.focusPoint;
-      this.outFocusDiff = this.outFocusPoint - this.focusPoint; // Update Scroll Positions
+      this.outFocusDiff = this.outFocusPoint - this.focusPoint;
+    }
+  }, {
+    key: "_setProperties",
+    value: function _setProperties() {
+      this.resizeTimer = undefined;
+      this.isScrolling = false;
+
+      this._setElementProperties();
+
+      this._setFocusProperties();
 
       this._onScroll();
     }
@@ -1158,8 +1180,7 @@ var InViewAnimate = /*#__PURE__*/function () {
   }, {
     key: "_onScroll",
     value: function _onScroll() {
-      console.log('scroll:', this); // Updated Properties
-
+      // Updated Properties
       if (!this.isScrolling) {
         window.requestAnimationFrame(this._animateElement);
         this.isScrolling = true;
@@ -1169,18 +1190,6 @@ var InViewAnimate = /*#__PURE__*/function () {
 
   return InViewAnimate;
 }();
-/*
--calcAxis
--calcRotate
--calcScale
--addEvents
--onResize
--onScroll
--removeEvents
--setProperties
-updateAnimations
-*/
-
 
 exports.InViewAnimate = InViewAnimate;
 
