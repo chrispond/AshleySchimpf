@@ -14,16 +14,6 @@
  * const myShadow = new Shadow(document.querySelector('.my-shadow'));
  **/
 export class InViewAnimate {
-  static calcAnimate(animate, from, to) {
-    if (from > to) {
-      const difference = from - to;
-      return from - difference * animate;
-    } else {
-      const difference = to - from;
-      return from + difference * animate;
-    }
-  }
-
   constructor(element, data) {
     // Element
     this.element = element;
@@ -31,7 +21,7 @@ export class InViewAnimate {
     // Data
     this.data = data;
     this.startData = this.data.startAnimate || 0;
-    this.endData = this.data.endAnimate || 1;
+    this.endData = this.data.finishAnimate || 1;
 
     // Events
     this._onResize = this._onResize.bind(this);
@@ -40,6 +30,23 @@ export class InViewAnimate {
     // this._onTouchEnd = this._onTouchEnd.bind(this);
     // this._onTouchMove = this._onTouchMove.bind(this);
     // this._onTouchStart = this._onTouchStart.bind(this);
+
+    this.transformValueMethod = {
+      perspective: (value, unit) => `perspective(${value}${unit})`,
+      rotate: (value, unit) => `rotate(${value}${unit})`,
+      rotateX: (value, unit) => `rotateX(${value}${unit})`,
+      rotateY: (value, unit) => `rotateY(${value}${unit})`,
+      rotateZ: (value, unit) => `rotateZ(${value}${unit})`,
+      scale: (value) => `scale(${value})`,
+      scaleX: (value) => `scaleX(${value})`,
+      scaleY: (value) => `scaleY(${value})`,
+      scaleZ: (value) => `scaleZ(${value})`,
+      skewX: (value) => `skewX(${value}${unit})`,
+      skewY: (value) => `skewY(${value}${unit})`,
+      translateX: (value, unit) => `translateX(${value}${unit})`,
+      translateY: (value, unit) => `translateY(${value}${unit})`,
+      translateZ: (value, unit) => `translateZ(${value}${unit})`,
+    };
 
     this._addEvents();
     this._setProperties();
@@ -58,92 +65,51 @@ export class InViewAnimate {
 
     let transformStyles = '';
 
-    if (animateOutPercent < 1 && animateOutPercent > 0) {
-      if (this.data.animateOutData.fade !== undefined)
-        this.element.style.opacity = InViewAnimate.calcAnimate(
+    if (animateOutPercent > 0) {
+      const isStill = animateOutPercent >= 1;
+
+      Object.keys(this.data.animateOutData).forEach((key) => {
+        const value = this.data.animateOutData[key];
+        const animateValue = this._calcAnimation(
           animateOutPercent,
-          this.data.animateFocus.fade,
-          this.data.animateOutData.fade
+          this.data.animateFocus[key],
+          value
         );
-      if (this.data.animateOutData.x !== undefined)
-        transformStyles += `translateX(${InViewAnimate.calcAnimate(
-          animateOutPercent,
-          this.data.animateFocus.x,
-          this.data.animateOutData.x
-        )}%)`;
-      if (this.data.animateOutData.y !== undefined)
-        transformStyles += `translateY(${InViewAnimate.calcAnimate(
-          animateOutPercent,
-          this.data.animateFocus.y,
-          this.data.animateOutData.y
-        )}%)`;
-      if (this.data.animateOutData.scale !== undefined)
-        transformStyles += `scale(${InViewAnimate.calcAnimate(
-          animateOutPercent,
-          this.data.animateFocus.scale,
-          this.data.animateOutData.scale
-        )})`;
-      if (this.data.animateOutData.rotate !== undefined)
-        transformStyles += `rotate(${InViewAnimate.calcAnimate(
-          animateOutPercent,
-          this.data.animateFocus.rotate,
-          this.data.animateOutData.rotate
-        )}turn)`;
-    } else if (animateOutPercent >= 1) {
-      if (this.data.animateOutData.fade !== undefined)
-        this.element.style.opacity = this.data.animateOutData.fade;
-      if (this.data.animateOutData.x !== undefined)
-        transformStyles += `translateX(${this.data.animateOutData.x}%)`;
-      if (this.data.animateOutData.y !== undefined)
-        transformStyles += `translateY(${this.data.animateOutData.y}%)`;
-      if (this.data.animateOutData.scale !== undefined)
-        transformStyles += `scale(${this.data.animateOutData.scale})`;
-      if (this.data.animateOutData.rotate !== undefined)
-        transformStyles += `rotate(${this.data.animateOutData.rotate}turn)`;
-    } else if (animateInPercent < 1 && animateInPercent > 0) {
+        const isTransformValue = this.transformValueMethod[key];
+        const updateValue = isStill ? value : animateValue;
+
+        if (isTransformValue) {
+          transformStyles += this.transformValueMethod[key](
+            updateValue,
+            this.data.units[key]
+          );
+        } else {
+          this.element.style[key] = updateValue;
+        }
+      });
+    } else if (animateInPercent > 0) {
+      const isStill = animateInPercent >= 1;
       const inPercent = 1 - animateInPercent;
-      if (this.data.animateInData.fade !== undefined)
-        this.element.style.opacity = 1 - animateInPercent;
-      this.element.style.opacity = InViewAnimate.calcAnimate(
-        inPercent,
-        this.data.animateInData.fade,
-        this.data.animateFocus.fade
-      );
-      if (this.data.animateInData.x !== undefined)
-        transformStyles += `translateX(${InViewAnimate.calcAnimate(
+
+      Object.keys(this.data.animateInData).forEach((key) => {
+        const value = this.data.animateInData[key];
+        const animateValue = this._calcAnimation(
           inPercent,
-          this.data.animateInData.x,
-          this.data.animateFocus.x
-        )}%)`;
-      if (this.data.animateInData.y !== undefined)
-        transformStyles += `translateY(${InViewAnimate.calcAnimate(
-          inPercent,
-          this.data.animateInData.y,
-          this.data.animateFocus.y
-        )}%)`;
-      if (this.data.animateInData.scale !== undefined)
-        transformStyles += `scale(${InViewAnimate.calcAnimate(
-          inPercent,
-          this.data.animateInData.scale,
-          this.data.animateFocus.scale
-        )})`;
-      if (this.data.animateInData.rotate !== undefined)
-        transformStyles += `rotate(${InViewAnimate.calcAnimate(
-          inPercent,
-          this.data.animateInData.rotate,
-          this.data.animateFocus.rotate
-        )}turn)`;
-    } else if (animateInPercent >= 1) {
-      if (this.data.animateInData.fade !== undefined)
-        this.element.style.opacity = this.data.animateInData.fade;
-      if (this.data.animateInData.x !== undefined)
-        transformStyles += `translateX(${this.data.animateInData.x}%)`;
-      if (this.data.animateInData.y !== undefined)
-        transformStyles += `translateY(${this.data.animateInData.y}%)`;
-      if (this.data.animateInData.scale !== undefined)
-        transformStyles += `scale(${this.data.animateInData.scale})`;
-      if (this.data.animateInData.rotate !== undefined)
-        transformStyles += `rotate(${this.data.animateInData.rotate}turn)`;
+          value,
+          this.data.animateFocus[key]
+        );
+        const isTransformValue = this.transformValueMethod[key];
+        const updateValue = isStill ? value : animateValue;
+
+        if (isTransformValue) {
+          transformStyles += this.transformValueMethod[key](
+            updateValue,
+            this.data.units[key]
+          );
+        } else {
+          this.element.style[key] = updateValue;
+        }
+      });
     }
 
     this.element.style.webkitTransform = transformStyles;
@@ -160,6 +126,16 @@ export class InViewAnimate {
   _addEvents() {
     window.addEventListener('resize', this._onResize);
     document.addEventListener('scroll', this._onScroll);
+  }
+
+  _calcAnimation(animate, from, to) {
+    if (from > to) {
+      const difference = from - to;
+      return from - difference * animate;
+    } else {
+      const difference = to - from;
+      return from + difference * animate;
+    }
   }
 
   /**
@@ -196,7 +172,8 @@ export class InViewAnimate {
       this.windowHeight * (1 - this.startData) - this.elementMiddle;
     this.outFocusPoint =
       this.windowHeight * (1 - this.endData) - this.elementMiddle;
-    this.focusPoint = this.windowHeight * 0.5 - this.elementMiddle;
+    this.focusPoint =
+      this.windowHeight * this.data.focusAnimate - this.elementMiddle;
     this.inFocusDiff = this.inFocusPoint - this.focusPoint;
     this.outFocusDiff = this.outFocusPoint - this.focusPoint;
   }

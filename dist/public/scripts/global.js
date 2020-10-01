@@ -113,22 +113,28 @@ var shadowElements = document.querySelectorAll('.shadow');
 var shadowElementsLength = shadowElements.length;
 var animateData = {
   animateFocus: {
-    fade: 0.2,
+    opacity: 0.2,
     rotate: 0.015
   },
   animateInData: {
-    fade: 0.1,
+    opacity: 0.1,
     rotate: 0
   },
   animateOutData: {
-    fade: 0.1,
+    opacity: 0.1,
     rotate: 0
   },
-  startAnimate: 0.2,
-  // start
-  endAnimate: 0.8 // finish
-  // add focus point
+  units: {
+    rotate: 'turn',
+    // deg, turn, rad
+    translateX: '%',
+    // %, px, rem, em
+    translateY: '%' // %, px, rem, em
 
+  },
+  startAnimate: 0.2,
+  finishAnimate: 1,
+  focusAnimate: 0.25
 };
 
 if (shadowElementsLength > 0) {
@@ -1014,20 +1020,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * const myShadow = new Shadow(document.querySelector('.my-shadow'));
  **/
 var InViewAnimate = /*#__PURE__*/function () {
-  _createClass(InViewAnimate, null, [{
-    key: "calcAnimate",
-    value: function calcAnimate(animate, from, to) {
-      if (from > to) {
-        var difference = from - to;
-        return from - difference * animate;
-      } else {
-        var _difference = to - from;
-
-        return from + _difference * animate;
-      }
-    }
-  }]);
-
   function InViewAnimate(element, data) {
     _classCallCheck(this, InViewAnimate);
 
@@ -1036,13 +1028,58 @@ var InViewAnimate = /*#__PURE__*/function () {
 
     this.data = data;
     this.startData = this.data.startAnimate || 0;
-    this.endData = this.data.endAnimate || 1; // Events
+    this.endData = this.data.finishAnimate || 1; // Events
 
     this._onResize = this._onResize.bind(this);
     this._onScroll = this._onScroll.bind(this);
     this._animateElement = this._animateElement.bind(this); // this._onTouchEnd = this._onTouchEnd.bind(this);
     // this._onTouchMove = this._onTouchMove.bind(this);
     // this._onTouchStart = this._onTouchStart.bind(this);
+
+    this.transformValueMethod = {
+      perspective: function perspective(value, unit) {
+        return "perspective(".concat(value).concat(unit, ")");
+      },
+      rotate: function rotate(value, unit) {
+        return "rotate(".concat(value).concat(unit, ")");
+      },
+      rotateX: function rotateX(value, unit) {
+        return "rotateX(".concat(value).concat(unit, ")");
+      },
+      rotateY: function rotateY(value, unit) {
+        return "rotateY(".concat(value).concat(unit, ")");
+      },
+      rotateZ: function rotateZ(value, unit) {
+        return "rotateZ(".concat(value).concat(unit, ")");
+      },
+      scale: function scale(value) {
+        return "scale(".concat(value, ")");
+      },
+      scaleX: function scaleX(value) {
+        return "scaleX(".concat(value, ")");
+      },
+      scaleY: function scaleY(value) {
+        return "scaleY(".concat(value, ")");
+      },
+      scaleZ: function scaleZ(value) {
+        return "scaleZ(".concat(value, ")");
+      },
+      skewX: function skewX(value) {
+        return "skewX(".concat(value).concat(unit, ")");
+      },
+      skewY: function skewY(value) {
+        return "skewY(".concat(value).concat(unit, ")");
+      },
+      translateX: function translateX(value, unit) {
+        return "translateX(".concat(value).concat(unit, ")");
+      },
+      translateY: function translateY(value, unit) {
+        return "translateY(".concat(value).concat(unit, ")");
+      },
+      translateZ: function translateZ(value, unit) {
+        return "translateZ(".concat(value).concat(unit, ")");
+      }
+    };
 
     this._addEvents();
 
@@ -1052,6 +1089,8 @@ var InViewAnimate = /*#__PURE__*/function () {
   _createClass(InViewAnimate, [{
     key: "_animateElement",
     value: function _animateElement() {
+      var _this = this;
+
       this.isScrolling = false;
 
       this._setElementProperties();
@@ -1063,32 +1102,40 @@ var InViewAnimate = /*#__PURE__*/function () {
       var animateOutPercent = (this.elementDistance - this.focusPoint) / this.outFocusDiff;
       var transformStyles = '';
 
-      if (animateOutPercent < 1 && animateOutPercent > 0) {
-        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.fade, this.data.animateOutData.fade);
-        if (this.data.animateOutData.x !== undefined) transformStyles += "translateX(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.x, this.data.animateOutData.x), "%)");
-        if (this.data.animateOutData.y !== undefined) transformStyles += "translateY(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.y, this.data.animateOutData.y), "%)");
-        if (this.data.animateOutData.scale !== undefined) transformStyles += "scale(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.scale, this.data.animateOutData.scale), ")");
-        if (this.data.animateOutData.rotate !== undefined) transformStyles += "rotate(".concat(InViewAnimate.calcAnimate(animateOutPercent, this.data.animateFocus.rotate, this.data.animateOutData.rotate), "turn)");
-      } else if (animateOutPercent >= 1) {
-        if (this.data.animateOutData.fade !== undefined) this.element.style.opacity = this.data.animateOutData.fade;
-        if (this.data.animateOutData.x !== undefined) transformStyles += "translateX(".concat(this.data.animateOutData.x, "%)");
-        if (this.data.animateOutData.y !== undefined) transformStyles += "translateY(".concat(this.data.animateOutData.y, "%)");
-        if (this.data.animateOutData.scale !== undefined) transformStyles += "scale(".concat(this.data.animateOutData.scale, ")");
-        if (this.data.animateOutData.rotate !== undefined) transformStyles += "rotate(".concat(this.data.animateOutData.rotate, "turn)");
-      } else if (animateInPercent < 1 && animateInPercent > 0) {
+      if (animateOutPercent > 0) {
+        var isStill = animateOutPercent >= 1;
+        Object.keys(this.data.animateOutData).forEach(function (key) {
+          var value = _this.data.animateOutData[key];
+
+          var animateValue = _this._calcAnimation(animateOutPercent, _this.data.animateFocus[key], value);
+
+          var isTransformValue = _this.transformValueMethod[key];
+          var updateValue = isStill ? value : animateValue;
+
+          if (isTransformValue) {
+            transformStyles += _this.transformValueMethod[key](updateValue, _this.data.units[key]);
+          } else {
+            _this.element.style[key] = updateValue;
+          }
+        });
+      } else if (animateInPercent > 0) {
+        var _isStill = animateInPercent >= 1;
+
         var inPercent = 1 - animateInPercent;
-        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = 1 - animateInPercent;
-        this.element.style.opacity = InViewAnimate.calcAnimate(inPercent, this.data.animateInData.fade, this.data.animateFocus.fade);
-        if (this.data.animateInData.x !== undefined) transformStyles += "translateX(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.x, this.data.animateFocus.x), "%)");
-        if (this.data.animateInData.y !== undefined) transformStyles += "translateY(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.y, this.data.animateFocus.y), "%)");
-        if (this.data.animateInData.scale !== undefined) transformStyles += "scale(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.scale, this.data.animateFocus.scale), ")");
-        if (this.data.animateInData.rotate !== undefined) transformStyles += "rotate(".concat(InViewAnimate.calcAnimate(inPercent, this.data.animateInData.rotate, this.data.animateFocus.rotate), "turn)");
-      } else if (animateInPercent >= 1) {
-        if (this.data.animateInData.fade !== undefined) this.element.style.opacity = this.data.animateInData.fade;
-        if (this.data.animateInData.x !== undefined) transformStyles += "translateX(".concat(this.data.animateInData.x, "%)");
-        if (this.data.animateInData.y !== undefined) transformStyles += "translateY(".concat(this.data.animateInData.y, "%)");
-        if (this.data.animateInData.scale !== undefined) transformStyles += "scale(".concat(this.data.animateInData.scale, ")");
-        if (this.data.animateInData.rotate !== undefined) transformStyles += "rotate(".concat(this.data.animateInData.rotate, "turn)");
+        Object.keys(this.data.animateInData).forEach(function (key) {
+          var value = _this.data.animateInData[key];
+
+          var animateValue = _this._calcAnimation(inPercent, value, _this.data.animateFocus[key]);
+
+          var isTransformValue = _this.transformValueMethod[key];
+          var updateValue = _isStill ? value : animateValue;
+
+          if (isTransformValue) {
+            transformStyles += _this.transformValueMethod[key](updateValue, _this.data.units[key]);
+          } else {
+            _this.element.style[key] = updateValue;
+          }
+        });
       }
 
       this.element.style.webkitTransform = transformStyles;
@@ -1108,6 +1155,18 @@ var InViewAnimate = /*#__PURE__*/function () {
       window.addEventListener('resize', this._onResize);
       document.addEventListener('scroll', this._onScroll);
     }
+  }, {
+    key: "_calcAnimation",
+    value: function _calcAnimation(animate, from, to) {
+      if (from > to) {
+        var difference = from - to;
+        return from - difference * animate;
+      } else {
+        var _difference = to - from;
+
+        return from + _difference * animate;
+      }
+    }
     /**
     @name _onReszie
     @description Recalculates scroll position & inFocus position
@@ -1119,7 +1178,7 @@ var InViewAnimate = /*#__PURE__*/function () {
   }, {
     key: "_onResize",
     value: function _onResize() {
-      var _this = this;
+      var _this2 = this;
 
       // Initiate setTimeout to determine when resizing is over
       if (this.resizeTimer) {
@@ -1127,9 +1186,9 @@ var InViewAnimate = /*#__PURE__*/function () {
       }
 
       this.resizeTimer = window.setTimeout(function () {
-        _this._setProperties();
+        _this2._setProperties();
 
-        _this.resizeTimer = undefined;
+        _this2.resizeTimer = undefined;
       }, 400);
     }
   }, {
@@ -1147,7 +1206,7 @@ var InViewAnimate = /*#__PURE__*/function () {
       this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
       this.inFocusPoint = this.windowHeight * (1 - this.startData) - this.elementMiddle;
       this.outFocusPoint = this.windowHeight * (1 - this.endData) - this.elementMiddle;
-      this.focusPoint = this.windowHeight * 0.5 - this.elementMiddle;
+      this.focusPoint = this.windowHeight * this.data.focusAnimate - this.elementMiddle;
       this.inFocusDiff = this.inFocusPoint - this.focusPoint;
       this.outFocusDiff = this.outFocusPoint - this.focusPoint;
     }

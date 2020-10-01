@@ -105,20 +105,25 @@ const shadowElements = document.querySelectorAll('.shadow');
 const shadowElementsLength = shadowElements.length;
 const animateData = {
   animateFocus: {
-    fade: 0.2,
+    opacity: 0.2,
     rotate: 0.015,
   },
   animateInData: {
-    fade: 0.1,
+    opacity: 0.1,
     rotate: 0,
   },
   animateOutData: {
-    fade: 0.1,
+    opacity: 0.1,
     rotate: 0,
   },
-  startAnimate: 0.2, // start
-  endAnimate: 0.8, // finish
-  // add focus point
+  units: {
+    rotate: 'turn', // deg, turn, rad
+    translateX: '%', // %, px, rem, em
+    translateY: '%', // %, px, rem, em
+  },
+  startAnimate: 0.2,
+  finishAnimate: 1,
+  focusAnimate: 0.25,
 };
 
 if (shadowElementsLength > 0) {
